@@ -92,3 +92,48 @@ select empno, ename, job, sal
 from emp
 where job not in ('CLERK', 'ANALYST', 'MANAGER')
 order by empno;
+
+
+-- like 검색: 특정 문자열로 시작하거나 또는 특정 문자열이 포함된 값(들)을 찾는 검색
+-- like 검색에서 사용되는 wildcard:
+-- (1) %: 글자수 제한이 없음.
+-- (2) _: 밑줄(underscore)이 있는 자리에 한 글자가 어떤 문자이더라도 상관 없음.
+
+select * from emp where job like '_LERK'; --> 4개 행
+select * from emp where job like '_ERK';  --> 0개 행
+select * from emp where job like '__ERK'; --> 4개 행
+select * from emp where job like 'C____'; --> 4개 행
+select * from emp where job like 'C%'; -- 'C'로 시작하는 모든 단어
+select * from emp where job like '%K'; -- 'K'로 끝나는 모든 단어
+
+-- 이름에 'A'가 포함된 직원들의 모든 레코드(행과 열)을 출력.
+select * from emp where ename like '%A%';
+
+-- 업무에 'MAN' 문자열이 포함된 직원들의 모든 레코드를 출력.
+select * from emp where job like '%MAN%';
+
+insert into emp (empno, ename, job)
+values (1001, '홍길동', 'sa_le%man');
+commit;
+
+select * from emp;
+select * from emp where job like '%\_%' escape '\';
+-- like '%[escaple문자][검색할 특수기호]%' escape '[escape문자]'
+
+
+select * from emp where empno = 7369;
+select * from emp where empno = '7369';  -- 암묵적 타입 변환
+--> 오라클에서 숫자 타입 컬럼과 문자열 타입 값을 비교할 때 
+-- 문자열을 숫자로 변환한 후 컬럼의 값들과 비교.
+
+-- 명시적 타입 변환
+select * from emp where empno = to_number('7369');
+
+-- 날짜 타입에서도 크기 비교 가능: 과거(2024년) < 현재(2025년) < 미래(2026년)
+-- 1982/01/01 이후에 입사한 직원들
+select * from emp 
+where hiredate > '1982/01/01'
+order by hiredate;
+--> where 구문에서 암묵적 타입 변환
+-- 오라클은 날짜(DATE) 타입 컬럼과 문자열 값을 비교할 때
+-- 문자열을 날짜 타입으로 (자동) 변환 후에 컬럼의 값들과 비교.
