@@ -80,3 +80,14 @@ select deptno, ename, sal
 from emp
 order by deptno, sal desc;  -- order by deptno asc, sal desc
 
+-- 직원 테이블에서 부서번호 컬럼 선택 출력
+select deptno from emp;
+
+-- 직원 테이블에서 중복되지 않는 부서번호를 검색
+select distinct deptno from emp;
+
+-- 직원 테이블에서 중복되지 않는 부서번호/업무를 검색.
+select distinct deptno, job from emp;
+
+-- select distinct deptno, distinct job from emp;
+--> distinct 키워드는 컬럼 이름들 앞에서 한 번만 사용할 수 있음.
