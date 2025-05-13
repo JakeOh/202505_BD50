@@ -137,3 +137,26 @@ order by hiredate;
 --> where 구문에서 암묵적 타입 변환
 -- 오라클은 날짜(DATE) 타입 컬럼과 문자열 값을 비교할 때
 -- 문자열을 날짜 타입으로 (자동) 변환 후에 컬럼의 값들과 비교.
+
+select * from emp 
+where hiredate > '82/01/01'
+order by hiredate;
+-- 도구 -> 환경설정 -> 데이터베이스 -> NLS -> 날짜 형식 설정에 따라서 다른 결과 줌.
+
+-- 날짜 타입으로 명시적 변환: to_date('날짜 문자열', '날짜 포맷')
+-- 날짜 포맷 연도 표기 YY(현재 세기), RR(관습 세기)
+select to_date('82/01/01', 'RR/MM/DD') from dual;
+select to_date('2025-05-13', 'YYYY-MM-DD') from dual;
+select to_date('05-13-25', 'MM-DD-RR') from dual;
+select to_date('13-05-25', 'DD-MM-RR') from dual;
+select to_date('99-05-13', 'YY-MM-DD') from dual; --> 2099년 5월 13일
+select to_date('99-05-13', 'RR-MM-DD') from dual; --> 1999년 5월 13일
+
+select * from emp
+where hiredate > to_date('82/01/01', 'RR/MM/DD')
+order by hiredate;
+
+-- 날짜를 문자열로 명시적 변환: to_char(날짜, '날짜 포맷')
+select hiredate from emp;
+select to_char(hiredate, 'YYYY-MM-DD') from emp;
+select to_char(hiredate, 'MM-DD-YYYY') from emp;
