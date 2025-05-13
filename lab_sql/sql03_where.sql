@@ -144,13 +144,15 @@ order by hiredate;
 -- 도구 -> 환경설정 -> 데이터베이스 -> NLS -> 날짜 형식 설정에 따라서 다른 결과 줌.
 
 -- 날짜 타입으로 명시적 변환: to_date('날짜 문자열', '날짜 포맷')
--- 날짜 포맷 연도 표기 YY(현재 세기), RR(관습 세기: (2000 - 50)년 ~ (2000 + 49)년)
+-- 날짜 포맷 연도 표기 YY(현재 세기), RR(반올림 세기: (2000 - 50)년 ~ (2000 + 49)년)
 select to_date('82/01/01', 'RR/MM/DD') from dual;
 select to_date('2025-05-13', 'YYYY-MM-DD') from dual;
 select to_date('05-13-25', 'MM-DD-RR') from dual;
 select to_date('13-05-25', 'DD-MM-RR') from dual;
 select to_date('99-05-13', 'YY-MM-DD') from dual; --> 2099년 5월 13일
 select to_date('99-05-13', 'RR-MM-DD') from dual; --> 1999년 5월 13일
+select to_date('50-05-13', 'RR-MM-DD') from dual; --> 1950년
+select to_date('49-05-13', 'RR-MM-DD') from dual; --> 2049년
 
 select * from emp
 where hiredate > to_date('82/01/01', 'RR/MM/DD')
