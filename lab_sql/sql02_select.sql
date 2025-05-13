@@ -38,3 +38,45 @@ from emp;
 select
     ename || '은(는) 급여가 ' || sal || '입니다.' as "이름-급여"
 from emp;
+
+-- 부서 테이블(dept)에서 부서 번호, 부서 이름, 위치를 검색.
+-- 컬럼 이름 대신 별명을 사용해서 출력.
+select
+    deptno as "부서 번호",
+    dname as "부서 이름",
+    loc as "위치"
+from dept;
+
+-- 부서 테이블에서 부서 번호와 부서 이름을 '10-ACCOUNTING'와 같은 형식으로 출력.
+select
+    deptno || '-' || dname as "no-name"
+from dept;
+
+-- 검색 결과를 (오름차순, 내림차순) 정렬해서 출력:
+-- (문법) select ... from table order by 정렬기준컬럼 [asc/desc], ...;
+-- asc: ascending order. 오름차순. 기본값. 생략 가능.
+-- desc: descending order. 내림차순.
+
+-- 사번, 이름을 검색, 사번 오름차순 정렬 출력.
+select empno, ename from emp order by empno;  -- order by empno asc
+
+-- 사번, 이름을 사번의 내림차순 정렬해서 출력.
+select empno, ename from emp order by empno desc;
+
+-- 사번, 이름, 급여를 급여의 내림차순으로 출력.
+select empno, ename, sal
+from emp
+order by sal desc;
+
+-- 부서번호, 사번, 이름을 검색
+-- 정렬 조건: (1) 부서번호 오름차순, (2) 사번 오름차순.
+select deptno, empno, ename
+from emp
+order by deptno, empno;
+
+-- 부서번호, 이름, 급여를 검색
+-- 정렬 조건: (1) 부서번호 오름차순, (2) 급여 내림차순.
+select deptno, ename, sal
+from emp
+order by deptno, sal desc;  -- order by deptno asc, sal desc
+
