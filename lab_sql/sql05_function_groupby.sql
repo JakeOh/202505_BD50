@@ -82,7 +82,7 @@ from emp;
  
  -- 업무가 null이 아닌 직원들 중에서 업무별 직원수, 급여 평균/표준편차
  select
-    job,
+    job
     count(*) as "COUNT_EMP",
     round(avg(sal), 2) as "AVG_SAL",
     round(stddev(sal), 2) as "STD_SAL"
@@ -90,3 +90,73 @@ from emp;
  where job is not null
  group by job
  order by job;
+ 
+ -- 부서별 업무별 직원수, 급여 평균/최솟값/최댓값
+ -- 업무가 null인 직원, 급여가 null인 직원 제외.
+ select
+    deptno, job,
+    round(avg(sal), 2) as "AVG_SAL",
+    min(sal) as "MIN_SAL",
+    max(sal) as "MAX_SAL"
+ from emp
+ where (job is not null) and (sal is not null)
+ -- where not (job is null or sal is null)
+ group by deptno, job
+ order by deptno, "AVG_SAL";
+ -- select에서 설정한 별명(alias)는 order by 에서 사용할 수 있음.
+ -- where, group by, having에서는 사용할 수 없음!
+ 
+ -- 업무 중에서 PRESIDENT는 제외하고, 업무별 사원수를 출력.
+ -- 업무별 사원수가 3명 이상인 업무들만 출력.
+ select
+    job, count(*) as "COUNT"
+ from emp
+ where job != 'PRESIDENT'
+ group by job
+ having count(*) >= 3
+ order by "COUNT";
+ 
+ select
+    job, count(*) as "COUNT"
+from emp
+group by job
+having job != 'PRESIDENT' and count(*) >= 3
+order by "COUNT";
+ 
+ -- 업무별 직원수, 급여 합계 출력.
+ -- 입사일이 null인 직원 제외. 업무별 급여 합계가 5000 이상인 그룹만 출력.
+ select
+    job, count(*) as "COUNT", sum(sal) as "SUM_SAL"
+ from emp
+ where hiredate is not null
+ group by job
+ having sum(sal) >= 5000
+ order by "SUM_SAL" desc;
+ 
+ -- 입사연도별 직원수를 출력. (Hint) to_char(hiredate, 'YYYY')
+ select
+    to_char(hiredate, 'YYYY') as "YEAR",
+    count(*) as "NUM_OF_EMP"
+from emp
+group by to_char(hiredate, 'YYYY')
+order by "YEAR";
+
+select
+    substr(hiredate, 1, 4) as "YEAR",
+    count(*) as "COUNT"
+from emp
+group by substr(hiredate, 1, 4)
+;
+--> substr(hiredate, 1, 4) 함수는 hiredate(날짜 타입)을 암묵적으로 문자열 타입으로 변환한 후, 문자열 자르기를 수행.
+--> 환경설정 NLS 날짜 포맷의 영향을 받음.
+
+ -- 입사연도별 부서별 직원수를 출력. 1980년은 제외.
+ select
+    to_char(hiredate, 'YYYY') as "YEAR",
+    deptno,
+    count(*) AS "COUNT"
+ from emp
+ where to_char(hiredate, 'YYYY') != '1980'
+ group by to_char(hiredate, 'YYYY'), deptno
+ order by "YEAR", deptno;
+ 
