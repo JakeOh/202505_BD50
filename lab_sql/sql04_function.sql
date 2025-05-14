@@ -41,6 +41,10 @@ select
     replace(ename, substr(ename, 2, 1), '*') as "EMP_NAME"
 from emp;
 
+select
+    substr(ename, 1, 1) || '*' || substr(ename, 3) as "EMP_NAME"
+from emp;
+
 -- nvl(var, value): var의 값이 null이면 value를 반환(return)하고, 그렇지 않으면 var를 반환.
 select comm, nvl(comm, -1) from emp;
 
@@ -55,3 +59,56 @@ select
     nvl(sal, 0) * 12 + nvl(comm, 0) as "ANUAL_SAL"
 from emp
 order by ANUAL_SAL desc; -- select에서 설정한 alias(별명)을 order by에서 사용 가능.
+
+-- round(): 반올림
+select 
+    10 / 3,
+    round(10 / 3),     -- round(arg): arg(숫자 타입)의 소숫점 첫번째 자리에서 반올림 -> 정수
+    round(10 / 3, 1),  -- round(arg, 양의 정수): 양의 정수까지의 소숫점 이하 자리를 표현.
+    round(10 / 3, 2)
+from dual;
+
+-- round(arg, 음의 정수): 정수 자릿수에서 반올림.
+select round(153, -1), round(153, -2) from dual;
+
+-- trunc(): 버림.
+select trunc(3.141592, 2), trunc(3.141592, 3) from dual;
+
+-- decode(var, value, ret_val1, ret_val2):
+-- var의 값이 value와 같으면 ret_val1을 반환, 그렇지 않으면 ret_val2을 반환
+-- 부서번호가 10이면 보너스 1000, 그렇지 않으면 0.
+select
+    ename, deptno, decode(deptno, 10, 1000, 0) as "BONUS"
+from emp;
+
+-- decode(var, value1, ret_val1, value2, ret_val2, ret_val3)
+-- var의 값이 value1이면 ret_val1을 반환(if var = value1: bonus = ret_val1)
+-- var의 값이 value2이면 ret_val2를 반환(else if var = value2: bonus = ret_val2) 
+-- 그렇지 않으며 ret_val3을 반환(else bonus = ret_val3)
+select
+    ename, deptno,
+    decode(deptno, 10, 1000, 20, 500, 0) as "BONUS"
+from emp;
+
+-- 10번 부서는 보너스 1000, 20번 부서는 보너스 500, 30번 부서는 100, 그 이외에는 0
+select
+    ename, deptno,
+    decode(deptno, 10, 1000, 20, 500, 30, 100, 0) as "BONUS"
+from emp;
+
+-- case-when-end 구문: decode() 함수를 대신할 수 있는 구문
+select
+    ename, deptno,
+    case when deptno = 10 then 1000
+         when deptno = 20 then 500
+         when deptno = 30 then 100
+         else 0
+    end as "BONUS"
+from emp;
+
+-- 급여가 3000 이상이면 보너스 100
+-- 급여가 2000 이상이면 보너스 110
+-- 급여가 1000 이상이면 보너스 150
+-- 나머지는 보너스 200
+
+
