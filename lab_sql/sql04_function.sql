@@ -110,5 +110,11 @@ from emp;
 -- 급여가 2000 이상이면 보너스 110
 -- 급여가 1000 이상이면 보너스 150
 -- 나머지는 보너스 200
-
-
+select
+    ename, deptno, sal,
+    case when sal >= 3000 then 100
+         when sal >= 2000 then 110
+         when sal >= 1000 then 150
+         else 200
+    end as "BONUS"
+from emp;
