@@ -148,7 +148,7 @@ from emp
 group by substr(hiredate, 1, 4)
 ;
 --> substr(hiredate, 1, 4) 함수는 hiredate(날짜 타입)을 암묵적으로 문자열 타입으로 변환한 후, 문자열 자르기를 수행.
---> 환경설정 NLS 날짜 포맷의 영향을 받음.
+--> 암묵적 타입변환은 환경설정 NLS 날짜 포맷의 영향을 받음.
 
  -- 입사연도별 부서별 직원수를 출력. 1980년은 제외.
  select
@@ -159,4 +159,27 @@ group by substr(hiredate, 1, 4)
  where to_char(hiredate, 'YYYY') != '1980'
  group by to_char(hiredate, 'YYYY'), deptno
  order by "YEAR", deptno;
+ -->  where to_char(hiredate, 'YYYY') != '1980' 대신 
+ -- having to_char(hiredate, 'YYYY') != '1980' 도 같은 결과를 줌. 
  
+
+-- 부서별 급여 합계
+select deptno, sum(sal)
+from emp
+group by deptno
+order by deptno;
+
+select
+    deptno, decode(deptno, 10, sal)
+from emp;
+
+select
+    sum(decode(deptno, 10, sal)) as "10"
+from emp;
+
+-- decode 함수를 사용한 group by 결과를 행으로(가로로) 출력하기.
+select
+    sum(decode(deptno, 10, sal)) as "10",
+    sum(decode(deptno, 20, sal)) as "20",
+    sum(decode(deptno, 30, sal)) as "30"
+from emp;
