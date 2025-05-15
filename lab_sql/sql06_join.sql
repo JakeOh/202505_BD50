@@ -112,7 +112,7 @@ from emp e
     left join salgrade s on e.sal between s.losal and s.hisal;
 
 select e.empno, e.ename, e.sal, s.grade
-from emp e, salgrade s 
+from emp e, salgrade s
 where e.sal between s.losal(+) and s.hisal(+);
 -- e.sal >= s.losal(+) and e.sal <= s.hisal(+)
 -- s.losal(+) <= e.sal and e.sal <= s.hisal(+)
@@ -138,3 +138,34 @@ union
 select e.empno, e.ename, e.sal, s.grade
 from emp e, salgrade s 
 where e.sal(+) between s.losal and s.hisal;
+
+
+-- self-join: 같은 테이블에서 join을 하는 방법.
+-- 사번, 직원이름, 매니저 사번, 매니저 이름 검색
+-- ANSI inner join
+select
+    e1.empno, e1.ename, e1.mgr, e2.empno, e2.ename
+from emp e1
+    join emp e2 on e1.mgr = e2.empno
+order by e1.empno;
+
+-- Oracle inner join
+select
+    e1.empno, e1.ename, e1.mgr, e2.empno, e2.ename
+from emp e1, emp e2
+where e1.mgr = e2.empno
+order by e1.empno;
+
+-- ANSI left outer join
+select
+    e1.empno, e1.ename, e1.mgr, e2.empno, e2.ename
+from emp e1
+    left join emp e2 on e1.mgr = e2.empno
+order by e1.empno;
+
+-- Oracle left outer join
+select
+    e1.empno, e1.ename, e1.mgr, e2.empno, e2.ename
+from emp e1, emp e2
+where e1.mgr = e2.empno(+)
+order by e1.empno;
