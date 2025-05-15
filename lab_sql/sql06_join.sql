@@ -91,3 +91,50 @@ select
     e.empno, e.ename, e.deptno, d.deptno, d.dname
 from emp e, dept d
 where e.deptno(+) = d.deptno;
+
+
+-- equi-join: 조인의 조건식이 =인 경우.
+-- non-equi join: 조인의 조건식이 =가 아닌 경우. 부등호 등을 이용한 경우.
+-- emp 테이블과 salgrade 테이블을 조인해서 사번, 이름, 급여, 급여 등급을 검색.
+-- inner join
+select e.empno, e.ename, e.sal, s.grade
+from emp e
+    join salgrade s on e.sal between s.losal and s.hisal;
+-- e.sal >= s.losal and e.sal <= s.hisal
+
+select e.empno, e.ename, e.sal, s.grade
+from emp e, salgrade s 
+where e.sal between s.losal and s.hisal;
+
+-- left (outer) join
+select e.empno, e.ename, e.sal, s.grade
+from emp e
+    left join salgrade s on e.sal between s.losal and s.hisal;
+
+select e.empno, e.ename, e.sal, s.grade
+from emp e, salgrade s 
+where e.sal between s.losal(+) and s.hisal(+);
+-- e.sal >= s.losal(+) and e.sal <= s.hisal(+)
+-- s.losal(+) <= e.sal and e.sal <= s.hisal(+)
+
+-- right (outer) join
+select e.empno, e.ename, e.sal, s.grade
+from emp e
+    right join salgrade s on e.sal between s.losal and s.hisal;
+
+select e.empno, e.ename, e.sal, s.grade
+from emp e, salgrade s 
+where e.sal(+) between s.losal and s.hisal;
+
+-- full (outer) join
+select e.empno, e.ename, e.sal, s.grade
+from emp e
+    full join salgrade s on e.sal between s.losal and s.hisal;
+
+select e.empno, e.ename, e.sal, s.grade
+from emp e, salgrade s 
+where e.sal between s.losal(+) and s.hisal(+)
+union
+select e.empno, e.ename, e.sal, s.grade
+from emp e, salgrade s 
+where e.sal(+) between s.losal and s.hisal;
