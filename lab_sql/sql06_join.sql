@@ -19,9 +19,75 @@
 select * from emp;
 select * from dept;
 
--- 사번, 직원이름, 부서번호, 부서이름 검색
+-- inner join: 사번, 직원이름, 부서번호, 부서이름 검색
 -- ANSI 문법
 select
-    emp.empno, emp.ename, emp.deptno, dept.dname
-from emp inner join dept on emp.deptno = dept.deptno;
+    e.empno, e.ename, e.deptno, d.dname
+from emp e
+    inner join dept d on e.deptno = d.deptno;
 --> inner join에서 inner는 생략 가능.
+
+-- Oracle 문법
+select
+    e.empno, e.ename, e.deptno, d.dname
+from emp e, dept d
+where e.deptno = d.deptno;
+
+
+-- left join: 사번, 직원이름, 부서번호, 부서이름
+-- ANSI 문법
+select
+    e.empno, e.ename, e.deptno, d.dname
+from emp e
+    left outer join dept d on e.deptno = d.deptno;
+--> left outer join에서 outer는 생략 가능.
+
+-- Oracle 문법
+select
+    e.empno, e.ename, e.deptno, d.dname
+from emp e, dept d
+where e.deptno = d.deptno(+);
+
+
+-- right (outer) join: 사번, 직원이름, 부서번호, 부서이름
+-- ANSI 문법
+select
+    e.empno, e.ename, e.deptno, d.deptno, d.dname
+from emp e
+    right join dept d on e.deptno = d.deptno;
+
+-- Oracle 문법
+select
+    e.empno, e.ename, e.deptno, d.deptno, d.dname
+from emp e, dept d
+where e.deptno(+) = d.deptno;
+
+-- full (outer) join
+-- ANSI 문법
+select
+    e.empno, e.ename, e.deptno, d.deptno, d.dname
+from emp e
+    full join dept d on e.deptno = d.deptno;
+
+-- Oracle은 full outer join 문법을 제공하지 않음!
+-- Oracle에서는 left join의 결과와 right join의 결과를 "union(합집합)"
+select
+    e.empno, e.ename, e.deptno, d.deptno, d.dname
+from emp e, dept d
+where e.deptno = d.deptno(+)
+union
+select
+    e.empno, e.ename, e.deptno, d.deptno, d.dname
+from emp e, dept d
+where e.deptno(+) = d.deptno;
+
+-- 교집합(intersect)
+select
+    e.empno, e.ename, e.deptno, d.deptno, d.dname
+from emp e, dept d
+where e.deptno = d.deptno(+)
+intersect
+select
+    e.empno, e.ename, e.deptno, d.deptno, d.dname
+from emp e, dept d
+where e.deptno(+) = d.deptno;
