@@ -3,5 +3,5 @@ alter session set "_ORACLE_SCRIPT" = true;
 
 create user hr identified by hr;
 
--- hr 계정에 dba(관리자) 권한 부여
-grant dba to test;
+-- hr 계정에 dba(관리자) 권한 부여: resource, connect, ...
+grant dba to hr;
