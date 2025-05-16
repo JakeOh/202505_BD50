@@ -111,3 +111,54 @@ select e.ename, e.sal, e.deptno
 from emp e
     join dept d on e.deptno = d.deptno
 where d.loc = 'CHICAGO';
+
+
+-- 단일 행 서브쿼리: 서브쿼리의 결과 행의 개수가 1개인 경우.
+-- 단일 행 서브쿼리는 동등비교(=)를 사용할 수 있음.
+
+-- 다중 행 서브쿼리: 서브쿼리의 결과 행의 개수가 2개 이상인 경우.
+-- 다중 행 서브쿼리는 동등비교(=) 사용할 수 없음! in 연산자는 사용할 수 있음.
+-- SALESMAN들의 급여와 같은 급여를 받는 직원들.
+select sal from emp where job = 'SALESMAN';
+select * from emp where sal = 1600 or sal = 1250 or sal = 1500;
+select * from emp where sal in (1600, 1250, 1500);
+select * from emp where sal in (
+    select sal from emp where job = 'SALESMAN'
+);
+
+-- 매니저인 직원들.
+select * from emp
+where empno in (select distinct mgr from emp);
+
+-- 매니저가 아닌 직원들.
+select * from emp
+where empno not in (select distinct mgr from emp 
+                    where mgr is not null);
+
+-- in, not in 연산자는 값을 비교할 때 동등 비교(=, !=)를 사용.
+-- x = null (false), x != null (false)
+
+-- 다중행 서브쿼리와 exists, not exists
+select * from emp e1
+where exists (select * from emp e2 
+              where e2.mgr = e1.empno);
+
+select * from emp e1
+where not exists (select * from emp e2
+                  where e2.mgr = e1.empno);
+
+-- 부서 테이블 자료들 중에서 직원 테이블에 존재하는 부서 정보들.
+select * from dept d
+where exists (select * from emp e
+              where e.deptno = d.deptno)
+;
+
+select distinct d.*
+from dept d
+    join emp e on e.deptno = d.deptno;
+
+-- 부서 테이블 자료들 중에서 직원 테이블에 없는 부서 정보.
+select * from dept d
+where not exists (select * from emp e
+                  where e.deptno = d.deptno)
+;
