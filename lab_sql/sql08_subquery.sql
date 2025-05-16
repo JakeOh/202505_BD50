@@ -162,3 +162,115 @@ select * from dept d
 where not exists (select * from emp e
                   where e.deptno = d.deptno)
 ;
+
+
+-- 다중 행 서브쿼리에서 any vs all
+select * from emp
+where sal > any (select sal from emp
+                 where job = 'SALESMAN');
+--> SALESMAN들의 급여 중 최솟값보다 더 많은 급여를 받는 직원들.
+
+-- 위의 다중 행 서브쿼리는 아래의 단일 행 서브쿼리와 같은 결과.
+select * from emp
+where sal > (select min(sal) from emp 
+             where job = 'SALESMAN');
+
+select * from emp
+where sal > all (select sal from emp
+                 where job = 'SALESMAN');
+--> SALESMAN들의 급여 중 최댓값보다 더 많은 급여를 받는 직원들.
+
+
+-- having 절에서의 서브쿼리
+-- 업무별 급여의 합계, 영업사원들의 급여 합계보다 큰 경우만 출력.
+select job, sum(sal) AS "TOTAL_SALARY"
+from emp
+group by job
+having sum(sal) > (select sum(sal) from emp
+                   where job = 'SALESMAN')
+order by "TOTAL_SALARY";
+
+
+-- select 절에서의 서브쿼리
+-- 영업사원들의 이름, 월급을 영업사원 월급 최댓값/최솟값과 함께 출력.
+select
+    ename, sal,
+    (select min(sal) from emp where job = 'SALESMAN') as "MIN",
+    (select max(sal) from emp where job = 'SALESMAN') as "MAX"
+from emp
+where job = 'SALESMAN';
+
+
+-- from 절에서의 서브쿼리
+-- 이름, 급여, 급여 순위
+select ename, sal,
+    rank() over (order by sal desc nulls last) as "RANKING"
+from emp;
+-- 오름차순(asc) 정렬에서는 null 값이 가장 마지막에 출력.
+-- 내림차순(desc) 정렬에서는 null 값이 가장 먼저 출력.
+-- order by 컬럼 desc nulls last 형식으로 사용하면 내림차순에서도 null들은 가장 마지막에 출력.
+
+-- 급여 순위 5위까지 출력
+select 
+    t.ename, t.sal, t."RANK"
+from (select emp.*, 
+          rank() over (order by sal desc nulls last) as "RANK"
+      from emp
+     ) t
+where t."RANK" <= 5;
+
+
+-- with 식별자 as (서브쿼리) 구문 --> 주 SQL 문장을 간단히 작성하기 위해서.
+with t as (
+    select emp.*, 
+           rank() over (order by sal desc nulls last) as "RANK"
+    from emp
+)
+select t.ename, t.sal, t."RANK"
+from t
+where t."RANK" <= 5;
+
+
+-- 페이징(paging) 처리
+-- 직원 테이블에서 사번 오름차순 정렬 상태로 5개씩 출력.
+
+-- rownum: Oracle에서 제공되는 pseudo(가상) 컬럼
+select rownum as "RN", emp.* from emp order by empno;
+
+select
+    t.empno, t.ename, t.job, t.sal
+from (select rownum as "RN", emp.* from emp order by empno) t
+where t."RN" between 11 and 15;
+
+with t as (
+    select rownum as "RN", emp.*
+    from emp
+    order by empno
+)
+select 
+    t.empno, t.ename, t.job, t.sal
+from t
+where t."RN" between 1 and 5;
+
+
+-- row_number() 함수를 사용한 페이징
+with t as (
+    select
+        row_number() over (order by sal desc nulls last) as "RN",
+        emp.*
+    from emp
+)
+select t.empno, t.ename, t.sal
+from t
+where t."RN" between 1 and 5
+;
+
+
+-- Top-N 쿼리: offset-fetch 구문을 사용한 페이징.
+select 
+    empno, ename, sal
+from emp
+order by sal desc nulls last
+offset 0 rows
+fetch next 5 rows only
+;
