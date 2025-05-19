@@ -8,11 +8,95 @@
  */
 
 -- 1. 직원의 이름과 부서 이름을 출력. (inner join)
+select 
+    e.first_name || ' ' || e.last_name as "EMP_NAME",
+    d.department_name
+from employees e
+    join departments d on e.department_id = d.department_id
+;
+
+select 
+    e.first_name || ' ' || e.last_name as "EMP_NAME",
+    d.department_name
+from employees e, departments d
+where e.department_id = d.department_id;
+
 -- 2. 직원의 이름과 부서 이름을 출력. 부서 번호가 없는 직원도 출력.
+select 
+    e.first_name || ' ' || e.last_name as "EMP_NAME",
+    d.department_name
+from employees e
+    left join departments d on e.department_id = d.department_id
+;
+
+select 
+    e.first_name || ' ' || e.last_name as "EMP_NAME",
+    d.department_name
+from employees e, departments d
+where e.department_id = d.department_id(+);
+
 -- 3. 직원의 이름과 직무 이름(job title)을 출력.
+select 
+    e.first_name || ' ' || e.last_name as "EMP_NAME",
+    j.job_title
+from employees e
+    join jobs j on e.job_id = j.job_id;
+
+select 
+    e.first_name || ' ' || e.last_name as "EMP_NAME",
+    j.job_title
+from employees e, jobs j
+where e.job_id = j.job_id
+order by e.employee_id;
+
 -- 4. 직원의 이름과 직원이 근무하는 도시 이름(city)를 출력.
+select 
+    e.first_name || ' ' || e.last_name as "EMP_NAME",
+    l.city
+from employees e
+    join departments d on e.department_id = d.department_id
+    join locations l on d.location_id = l.location_id
+order by e.employee_id;
+
+select 
+    e.first_name || ' ' || e.last_name as "EMP_NAME",
+    l.city
+from employees e, departments d, locations l
+where e.department_id = d.department_id
+    and d.location_id = l.location_id
+order by e.employee_id;
+
 -- 5. 직원의 이름과 직원이 근무하는 도시 이름(city)를 출력. 근무 도시를 알 수 없는 직원도 출력.
+select 
+    e.first_name || ' ' || e.last_name as "EMP_NAME",
+    l.city
+from employees e
+    left join departments d on e.department_id = d.department_id
+    left join locations l on d.location_id = l.location_id
+order by e.employee_id;
+
+select 
+    e.first_name || ' ' || e.last_name as "EMP_NAME",
+    l.city
+from employees e, departments d, locations l
+where e.department_id = d.department_id(+)
+    and d.location_id = l.location_id(+)
+order by e.employee_id;
+
 -- 6. 2008년에 입사한 직원들의 이름을 출력.
+select 
+    e.first_name || ' ' || e.last_name as "EMP_NAME", 
+    e.hire_date
+from employees e
+where e.hire_date between to_date('2008/01/01', 'YYYY/MM/DD') and 
+                        to_date('2008/12/31', 'YYYY/MM/DD');
+
+select 
+    e.first_name || ' ' || e.last_name as "EMP_NAME", 
+    e.hire_date
+from employees e
+where to_char(e.hire_date, 'YYYY') = '2008';
+
 -- 7. 2008년에 입사한 직원들의 부서 이름과 부서별 인원수 출력.
 -- 8. 2008년에 입사한 직원들의 부서 이름과 부서별 인원수 출력. 
 --    단, 부서별 인원수가 5명 이상인 경우만 출력.
