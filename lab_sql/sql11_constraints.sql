@@ -181,12 +181,27 @@ select * from ex_test;
  * 컬럼:
  * (1) cust_id: 고객 아이디. 8 ~ 20 byte의 문자열. primary key.
  * (2) cust_pw: 고객 비밀번호. 8 ~ 20 byte의 문자열. not null.
- * (3) cust_email: 고객 이메일. 100 byte 문자열.
+ * (3) cust_email: 고객 이메일. 100 byte 가변 길이 문자열.
  * (4) cust_gender: 고객 성별. 1자리 정수. 기본값 0. (0, 1, 2) 중 1개 값만 가능.
  * (5) cust_age: 고객 나이. 3자리 정수. 기본값 0. 0 이상 200 이하의 정수만 가능.
  */
- 
+ drop table customers;
+ create table customers (
+    cust_id     varchar2(20)
+                constraint customers_pk_id primary key
+                constraint customers_ck_id check (lengthb(cust_id) >= 8),
+    cust_pw     varchar2(20)
+                constraint customers_nn_pw not null
+                constraint customers_ck_pw check (lengthb(cust_pw) >= 8),
+    cust_email  varchar2(100),
+    cust_gender number(1) default 0
+                constraint customers_ck_gender check (cust_gender in (0, 1, 2)),
+    cust_age    number(3) default 0
+                constraint customers_ck_age check (cust_age between 0 and 200)
+ );
+  
 /*
+ * 연습문제 2.
  * 테이블 이름: orders(주문)
  * 컬럼:
  * (1) order_id: 주문번호. 10자리 정수. primary key.
@@ -194,4 +209,13 @@ select * from ex_test;
  * (3) order_method: 주문 방법. 8 byte 문자열. ('online', 'offline') 중 1개 값만 가능.
  * (4) cust_id: 주문 고객 아이디. 20 byte 문자열. not null. customers(cust_id)를 참조.
  */
- 
+ drop table orders;
+ create table orders (
+    order_id        number(10),
+    order_date      date default sysdate,
+    order_method    varchar2(8),
+    cust_id         varchar2(20) not null,
+    constraint orders_pk_id primary key (order_id),
+    constraint orders_ck_method check (order_method in ('online', 'offline')),
+    constraint orders_fk_cust_id foreign key (cust_id) references customers (cust_id)
+ );
