@@ -44,3 +44,21 @@ alter table students add constraint students_pk primary key (student_id);
 
 -- 테이블 students에서 student_name 컬럼에 not null 제약조건을 추가
 alter table students add constraint students_nn_name check (student_name is not null);
+
+
+-- 3. 삭제: 컬럼, 제약조건 삭제
+-- (1) 컬럼 삭제
+-- ALTER TABLE table_name DROP COLUMN column_name;
+-- 테이블 students에서 birthday 컬럼 삭제
+
+-- (2) 제약조건 삭제
+-- ALTER TABLE table_name DROP CONSTRAINT constraint_name;
+-- 테이블 students에서 제약조건 students_nn_name를 삭제
+
+-- 4. 변경: 컬럼 정의(데이터 타입, 기본값, null 여부)를 수정.
+-- ALTER TABLE table_name MODIFY column_name data_type [default, ...];
+-- students 테이블에서 student_name 컬럼의 데이터 타입을
+-- varchar2(10 char)에서 varchar2(40 char)로 변경 & NN 제약조건 추가.
+
+-- students 테이블에서 department_id 컬럼의 데이터 타입을 5자리 정수로 변경하면서
+-- check (department_id between 10000 and 99999) 제약조건을 추가.
