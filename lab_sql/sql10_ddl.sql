@@ -117,3 +117,37 @@ create table ex_bonus (
     sal     number,
     comm    number
 );
+
+
+-- create table-as select 구문
+-- 새로운 테이블을 만들면서 기존 테이블의 내용을 복사
+create table emp_copy
+as select * from emp;
+
+select * from emp_copy;
+
+create table emp_copy2
+as select empno, ename, sal from emp;
+
+select * from emp_copy2;
+
+-- emp 테이블과 모양이 똑같은 emp_copy3을 생성. 데이터는 복사하지 않음.
+create table emp_copy3
+as select * from emp where empno = -1;
+
+select * from emp_copy3;
+
+-- emp 테이블에서 10번 부서의 직원들만 emp_dept10 테이블에 복사.
+create table emp_dept10
+as select * from emp where deptno = 10;
+
+select * from emp_dept10;
+
+-- emp_copy4 테이블을 생성, emp 테이블의 모든 컬럼, 부서 이름, 부서 위치 복사.
+create table emp_copy4
+as select e.*, d.dname, d.loc
+    from emp e
+        join dept d on e.deptno = d.deptno
+    order by e.empno;
+
+select * from emp_copy4;
