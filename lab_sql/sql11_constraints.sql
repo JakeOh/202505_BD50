@@ -100,3 +100,76 @@ create table ex_emp3 (
 insert into ex_emp3
 values (1234, null, 'hgd@test.com', 100, '테스트'); --> check not null 위배
 
+
+-- Foreign Key: (다른) 테이블의 PK를 참조하는 제약조건.
+-- (1) PK를 갖는 테이블을 먼저 생성, 그 PK를 참조하는 FK를 갖는 테이블을 생성.
+-- (2) 테이블들을 생성한 후, 필요한 제약조건(들)을 나중에 추가.
+
+create table ex_dept1 (
+    /* 컬럼 선언 */
+    deptno  number(2),
+    dname   varchar2(20) not null,
+    /* 제약조건 선언 */
+    constraint ex_dept1_pk_deptno primary key (deptno)
+);
+
+create table ex_emp4 (
+    /* 컬럼 선언 & 제약조건 설정 */
+    empno   number(4)
+            constraint ex_emp4_pk_empno primary key,
+    ename   varchar2(20) not null,
+    deptno  number(2)
+            constraint ex_emp4_fk_deptno references ex_dept1 (deptno)
+);
+
+insert into ex_emp4
+values (1100, '홍길동', 10);
+--> ex_dept1 테이블에 deptno=10인 자료(레코드)가 없기 때문에 insert가 실패!
+
+insert into ex_emp4 (empno, ename)
+values (1100, '홍길동');
+--> FK가 설정된 컬럼은 null은 될 수 있음.
+
+insert into ex_dept1 values (11, 'IT');
+insert into ex_dept1 values (12, 'HR');
+select * from ex_dept1;
+
+insert into ex_emp4
+values (1200, '오쌤', 11);
+--> ex_dept1 테이블에 deptno=11인 자료가 있기 때문에 insert가 성공.
+
+select * from ex_emp4;
+
+create table ex_emp5 (
+    /* 컬럼 선언 */
+    empno   number(4),
+    ename   varchar2(20) not null,
+    deptno  number(2),
+    
+    /* 제약조건 선언 */
+    constraint ex_emp5_pk_empno primary key (empno),
+    constraint ex_emp5_fk_deptno foreign key (deptno) references ex_dept1 (deptno)
+);
+
+
+-- 기본값을 갖는 컬럼
+create table ex_test (
+    id              number(6)
+                    constraint ex_test_pk_id primary key,
+    content         varchar2(1000) not null,
+    view_cnt        number(6)
+                    default 0 /* 기본값 설정 */
+                    constraint ex_test_ck_view_cnt check (view_cnt >= 0),
+    created_time    date
+                    default sysdate /* 기본값 설정 */
+);
+
+insert into ex_test (id, content)
+values (2, 'Hello, SQL!');
+--> default 값이 설정된 컬럼에 값을 insert하지 않는 경우에는 기본값이 자동으로 insert됨.
+
+insert into ex_test 
+values (3, '컨텐트 입력', 100, '2025/05/19');
+--> default 값이 설정된 컬럼 값을 insert하면, 기본값은 무시하고 삽입하려는 값이 insert됨.
+
+select * from ex_test;
