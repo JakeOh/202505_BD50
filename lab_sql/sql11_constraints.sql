@@ -64,3 +64,39 @@ set email = 'hgd@gmail.com', salary = 300
 where eno = 1002;
 
 select * from ex_emp1;
+commit;
+
+
+-- 테이블을 생성할 때 제약조건 만들기 2: 제약조건의 이름을 설정.
+-- (1) 컬럼 정의(선언)에서 제약조건 이름 설정
+create table ex_emp2 (
+    id      number(4) 
+            constraint ex_emp2_pk_id primary key,
+    name    varchar2(20) 
+            constraint ex_emp2_nn_name not null,
+    email   varchar2(100) 
+            constraint ex_emp2_uq_email unique,
+    salary  number(7, 2) 
+            constraint ex_emp2_ck_salary check (salary >= 0),
+    memo    varchar2(1000)
+);
+
+-- (2) 컬럼 정의(선언) 따로, 제약조건 설정 따로.
+create table ex_emp3 (
+    /* 컬럼 정의(선언): 컬럼 이름, 데이터 타입 */
+    id      number(4),
+    name    varchar2(10),
+    email   varchar2(100),
+    salary  number(7, 2),
+    memo    varchar2(1000),
+    
+    /* 제약조건 설정: 제약조건 이름, 내용 */
+    constraint ex_emp3_pk_id primary key (id),
+    constraint ex_emp3_nn_name check (name is not null), /* 주의: not null (column) 형식은 불가 */
+    constraint ex_emp3_uq_email unique (email),
+    constraint ex_emp3_ck_salary check (salary >= 0)
+);
+
+insert into ex_emp3
+values (1234, null, 'hgd@test.com', 100, '테스트'); --> check not null 위배
+
