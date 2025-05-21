@@ -50,15 +50,46 @@ alter table students add constraint students_nn_name check (student_name is not 
 -- (1) 컬럼 삭제
 -- ALTER TABLE table_name DROP COLUMN column_name;
 -- 테이블 students에서 birthday 컬럼 삭제
+desc students;
+alter table students drop column birthday;
 
 -- (2) 제약조건 삭제
 -- ALTER TABLE table_name DROP CONSTRAINT constraint_name;
 -- 테이블 students에서 제약조건 students_nn_name를 삭제
+alter table students drop constraint students_nn_name;
 
--- 4. 변경: 컬럼 정의(데이터 타입, 기본값, null 여부)를 수정.
+-- 오라클에서 테이블을 관리하기 위한 테이블(메타 테이블): user_tables, user_constraints
+select table_name from user_tables;
+select constraint_name from user_constraints;
+select constraint_name from user_constraints 
+where upper(constraint_name) like upper('students%');
+
+-- 4. 수정: 컬럼 정의(데이터 타입, 기본값, null 여부, ...)를 수정.
 -- ALTER TABLE table_name MODIFY column_name data_type [default, ...];
 -- students 테이블에서 student_name 컬럼의 데이터 타입을
 -- varchar2(10 char)에서 varchar2(40 char)로 변경 & NN 제약조건 추가.
+alter table students modify student_name varchar2(40 char) not null;
+desc students;
 
 -- students 테이블에서 department_id 컬럼의 데이터 타입을 5자리 정수로 변경하면서
 -- check (department_id between 10000 and 99999) 제약조건을 추가.
+alter table students 
+modify department_id number(5) 
+    constraint students_ck_deptid check (department_id between 10000 and 99999);
+
+desc students;
+
+update students set department_id = 10000;
+select * from students;
+
+alter table students
+add check (department_id is not null);
+
+
+-- DDL(Data Definition Language): create, alter, truncate, drop
+-- truncate table 테이블이름;  --> 테이블의 모든 행을 삭제하는 DDL
+select * from students;
+truncate table students;
+
+-- drop table 테이블 이름;  --> 테이블을 삭제하는 DDL
+drop table students;
