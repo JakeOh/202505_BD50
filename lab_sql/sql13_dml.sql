@@ -117,3 +117,40 @@ where empno in (
 );
 
 commit;
+
+
+-- delete 문장: 테이블에서 (조건을 만족하는) 행(들)을 삭제하는 DML.
+-- DELETE FROM table_name WHERE 조건식;
+-- where 조건식은 생략 가능. where 절을 생략하면 모든 행들을 삭제.
+-- where 절이 있으면 조건을 만족하는 행(들)만 삭제.
+
+delete from emp_copy;
+rollback;
+
+-- 사번이 1004인 직원 정보를 삭제.
+delete from emp_copy where empno = 1004;
+
+-- ALLEN 정보를 삭제.
+delete from emp_copy where ename = 'ALLEN';
+
+-- 급여등급이 5인 직원(들)을 삭제.
+delete from emp_copy
+where sal >= (select losal from salgrade where grade = 5)
+    and sal <= (select hisal from salgrade where grade = 5)
+;
+
+rollback;
+
+delete from emp_copy
+where sal in (
+    select e.sal
+    from emp_copy e
+        join salgrade s on e.sal >= s.losal and e.sal <= s.hisal
+    where s.grade = 5
+);
+
+select * from emp_copy;
+
+-- comm이 null인 직원들을 삭제.
+delete from emp_copy where comm is null;
+commit;
