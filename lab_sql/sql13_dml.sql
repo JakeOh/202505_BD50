@@ -57,3 +57,63 @@ select * from emp_copy;  --> 모든 행의 sal 값이 변경됨.
 
 rollback; --> 직전 commit 이후의 변경된 내용을 원래대로 복원(원복).
 select * from emp_copy;  --> update 하기 전의 내용을 되돌리기.
+
+-- insert, update 연습
+-- emp_copy 테이블에 사번(1004), 이름(오쌤), 부서번호(50) 직원 정보를 insert.
+insert into emp_copy (empno, ename, deptno)
+values (1004, '오쌤', 50);
+
+select * from emp_copy;
+commit;
+
+-- 사번 1004인 직원의 업무를 MANAGER, 급여를 6000, 입사날짜를 '2025/05/12'로 업데이트.
+update emp_copy
+set job = 'MANAGER', sal = 6000, hiredate = to_date('2025/05/12', 'YYYY/MM/DD')
+where empno = 1004;
+
+commit;
+
+-- 1982/01/01 이후에 입사한 직원들의 급여를 10% 인상.
+update emp_copy
+set sal = sal * 1.1
+where hiredate >= to_date('1982-01-01', 'YYYY-MM-DD');
+
+commit;
+
+-- ACCOUNTING 부서에서 일하는 직원들의 급여를 10% 인상.
+update emp_copy
+set sal = sal * 1.1
+where deptno = (
+    select deptno from dept where dname = 'ACCOUNTING'
+    );
+
+commit;
+
+select distinct d.deptno
+from emp_copy e
+    join dept d on e.deptno = d.deptno
+where d.dname = 'ACCOUNTING';
+
+-- salgrade가 1인 직원들의 급여를 25% 인상.
+update emp_copy
+set sal = sal * 1.25  /* sal = sal + sal * 0.25 */
+where sal between (select losal from salgrade where grade = 1)
+    and (select hisal from salgrade where grade = 1);
+
+rollback;
+
+select e.empno
+from emp_copy e
+    join salgrade s on e.sal between s.losal and s.hisal
+where s.grade = 1;
+
+update emp_copy
+set sal = sal * 1.25
+where empno in (
+    select e.empno
+    from emp_copy e
+        join salgrade s on e.sal between s.losal and s.hisal
+    where s.grade = 1
+);
+
+commit;
