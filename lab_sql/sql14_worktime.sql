@@ -143,4 +143,21 @@ where time > (
 );
 
 -- 각각의 연도에서 평균 근로 시간이 가장 긴 나라는?
+select year, max(time)
+from vw_work_time_long
+group by year;
+
+select *
+from vw_work_time_long
+where (year, time) in (
+    select year, max(time) from vw_work_time_long
+    group by year
+);
+
 -- 각각의 연도에서 평균 근로 시간이 가장 짧은 나라는?
+select * 
+from vw_work_time_long
+where (year, time) in (
+    select year, min(time) from vw_work_time_long
+    group by year
+);
