@@ -120,3 +120,27 @@ select "RN", country, y2018
 from v
 where "RN" <= 5;
 
+
+-- unpivot(): 컬럼의 내용들을 행으로 변경. 가로 데이터 -> 세로 데이터.
+-- unpivot(var_x for var_y in (column1, column2, ...))
+select * from work_time
+unpivot(time for year in (y2014, y2015, y2016, y2017, y2018));
+
+create view vw_work_time_long
+as
+select * from work_time
+unpivot(time for year in (y2014, y2015, y2016, y2017, y2018));
+
+select time
+from vw_work_time_long
+where country = '한국' and year = 'Y2018';
+
+select *
+from vw_work_time_long
+where time > (
+    select time from vw_work_time_long
+    where country = '한국' and year = 'Y2018'
+);
+
+-- 각각의 연도에서 평균 근로 시간이 가장 긴 나라는?
+-- 각각의 연도에서 평균 근로 시간이 가장 짧은 나라는?
