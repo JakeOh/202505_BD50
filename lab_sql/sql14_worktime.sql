@@ -35,6 +35,7 @@ select * from work_time;
 select y2018 from work_time
 where country = '한국';
 
+-- 2018년의 연평균 근로시간이 2018년 한국 연평균 근로시간보다 더 긴 국가(들).
 select country, y2018
 from work_time
 where y2018 > (
@@ -42,4 +43,80 @@ where y2018 > (
     where country = '한국'
 );
 
--- 2018년 평균 근로 시간 (많은 순서로) 상위 5개국 찾기.
+-- 연평균 근로시간이 2018년 한국 연평균 근로시간보다 더 긴 국가(들), 연도.
+select * from work_time
+where y2018 > (select y2018 from work_time
+                where country = '한국')
+    or y2017 > (select y2018 from work_time
+                where country = '한국')
+    or y2016 > (select y2018 from work_time
+                where country = '한국')
+    or y2015 > (select y2018 from work_time
+                where country = '한국')
+    or y2014 > (select y2018 from work_time
+                where country = '한국');
+
+
+-- 2018년 평균 근로 시간 (큰 순서로) 상위 5개국 찾기.
+
+-- (1) offset-fetch
+select country, y2018 from work_time
+order by y2018 desc
+offset 0 rows
+fetch next 5 rows only
+;
+
+-- (2) rank() 함수
+select
+    wt.*,
+    rank() over (order by y2018 desc) as "RNK"
+from work_time wt;
+
+with t as (
+    select wt.*,
+        rank() over (order by y2018 desc) as "RNK"
+    from work_time wt
+)
+select "RNK", country, y2018
+from t
+where "RNK" <= 5;
+
+-- row_number() 함수 사용
+select
+    wt.*,
+    row_number() over (order by y2018 desc) as "RN"
+from work_time wt;
+
+with t as (
+    select wt.*,
+        row_number() over (order by y2018 desc) as "RN"
+    from work_time wt
+)
+select "RN", country, y2018
+from t
+where "RN" <= 5;
+
+-- rownum: 행 번호를 표시하기 위해서 오라클에서 제공하는 가상 컬럼(pseudo column)
+select
+    rownum as "RN",
+    wt.*
+from work_time wt
+order by y2018 desc;
+
+select
+    rownum as "RN",
+    t.*
+from (
+    select * from work_time order by y2018 desc
+) t;
+
+with v as (
+    select rownum as "RN", t.*
+    from (
+        select * from work_time order by y2018 desc
+    ) t
+)
+select "RN", country, y2018 
+from v
+where "RN" <= 5;
+
