@@ -14,13 +14,32 @@ create table work_time (
 
 desc work_time;
 
--- [접속 패널] -> 테이블 -> 마우스 우 클릭 -> 데이터 임포트(import)
+-- [접속 패널] -> 테이블 -> 마우스 오른쪽 클릭 -> 데이터 임포트(import)
 
 select * from work_time;
 
+select * from work_time where country = '한국';
+select * from work_time where country like '%한국';
+
+select substr('대한민국', 3) from dual;
+
 select substr(country, length('　　　') + 1) from work_time;
 
+update work_time
+set country = substr(country, length('　　　') + 1);
+commit;
+
+select * from work_time;
+
 -- 2018년 한국의 평균 근로 시간보다 평균 근로 시간이 더 긴 국가는?
+select y2018 from work_time
+where country = '한국';
+
+select country, y2018
+from work_time
+where y2018 > (
+    select y2018 from work_time
+    where country = '한국'
+);
 
 -- 2018년 평균 근로 시간 (많은 순서로) 상위 5개국 찾기.
-
