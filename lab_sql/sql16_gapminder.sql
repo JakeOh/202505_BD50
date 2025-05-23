@@ -214,3 +214,86 @@ where AVG_GDP_PERCAP = (
     select max(AVG_GDP_PERCAP) from t
 );
 
+
+-- row_number() over ([partition by ...] order by ...)
+-- rank() over ([partition by ...] order by ...)
+
+-- 테이블에서 급여 순위
+select 
+    deptno, ename, sal,
+    rank() over (order by sal desc nulls last) as "RNK"
+from emp;
+
+-- emp 테이블에서 급여가 가장 많은 직원
+with t as (
+    select deptno, ename, sal,
+        rank() over (order by sal desc nulls last) as "RNK"
+    from emp
+)
+select *
+from t
+where RNK = 1;
+
+-- 부서별 급여 순위
+select
+    deptno, ename, sal,
+    rank() over (partition by deptno order by sal desc nulls last) as "RNK"
+from emp;
+
+-- 각 부서에서 급여가 가장 많은 직원들.
+with t as (
+    select deptno, ename, sal,
+        rank() over (partition by deptno
+                        order by sal desc nulls last) as "RNK"
+    from emp
+)
+select *
+from t
+where RNK = 1 and sal is not null;
+
+select deptno, ename, sal
+from emp
+where (deptno, sal) in (
+    select deptno, max(sal)
+    from emp
+    group by deptno
+)
+order by deptno;
+
+-- 연도별 1인당 GDP의 최댓값인 레코드
+select
+    g.*,
+    rank() over (partition by year 
+                    order by g.gdp_percap desc) as "RNK"
+from gapminder g;
+
+with t as (
+    select
+        g.*,
+        rank() over (partition by year 
+                        order by g.gdp_percap desc) as "RNK"
+    from gapminder g
+)
+select *
+from t
+where RNK = 1;
+
+
+-- pivot(집계함수 for 변수 in (변수의 값들))
+-- 부서별 급여 합계 -> 부서번호들을 컬럼 이름으로
+select *
+from (
+    select deptno, sal from emp
+)
+pivot(sum(sal) as "TOTAL_SAL"
+        for deptno in (10 as "D10", 20 as "D20", 30 as "D30"));
+
+-- 부서별 급여 합계 --> 부서번호들을 행으로.
+select 
+    deptno, sum(sal)
+from emp
+where deptno is not null
+group by deptno
+order by deptno;
+
+-- 업무별 급여 합계: (1) group by, (2) pivot
