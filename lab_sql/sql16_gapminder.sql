@@ -138,3 +138,79 @@ from gapminder
 group by continent, year
 order by continent, year;
 
+-- 연도별 대륙별 인구수 최댓값
+select
+    year, continent, sum(pop) as "TOTAL_POP"
+from gapminder    
+group by year, continent
+order by "TOTAL_POP" desc
+offset 0 rows
+fetch next 1 rows only;
+
+with t as (
+    select year, continent, sum(pop) as "TOTAL_POP"
+    from gapminder
+    group by year, continent
+)
+select *
+from t
+where TOTAL_POP = (
+    select max(TOTAL_POP) from t
+);
+
+-- 연도별, 대륙별 기대 수명의 평균
+select 
+    year, continent, round(avg(life_exp), 2) as "AVG_LIFE_EXP"
+from gapminder
+group by year, continent
+order by year, continent;
+--order by continent, year;
+
+select 
+    year, continent, round(avg(life_exp), 2) as "AVG_LIFE_EXP"
+from gapminder
+group by year, continent
+order by AVG_LIFE_EXP desc
+offset 0 rows
+fetch next 1 rows only;
+
+with t as (
+    select 
+        year, continent, avg(life_exp) as "AVG_LIFE_EXP"
+    from gapminder
+    group by year, continent
+)
+select *
+from t
+where "AVG_LIFE_EXP" = (
+    select max("AVG_LIFE_EXP") from t
+);
+
+-- 연도별 대륙별 1인당 GDP 평균
+select
+    year, continent, round(avg(gdp_percap), 2) as "AVG_GDP_PERCAP"
+from gapminder
+group by year, continent
+--order by year, continent;
+order by continent, year;
+
+select
+    year, continent, round(avg(gdp_percap), 2) as "AVG_GDP_PERCAP"
+from gapminder
+group by year, continent
+order by "AVG_GDP_PERCAP" desc
+offset 0 rows
+fetch next 1 rows only;
+
+with t as (
+    select
+        year, continent, avg(gdp_percap) as "AVG_GDP_PERCAP"
+    from gapminder
+    group by year, continent
+)
+select *
+from t
+where AVG_GDP_PERCAP = (
+    select max(AVG_GDP_PERCAP) from t
+);
+
