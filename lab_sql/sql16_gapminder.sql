@@ -81,3 +81,60 @@ select
     median(gdp_percap) as "중앙값",
     max(gdp_percap) as "최댓값"
 from gapminder;
+
+-- 기대수명(life_exp) 최댓값인 레코드(행)
+select *
+from gapminder
+where life_exp = (
+    select max(life_exp) from gapminder
+);
+
+
+-- 인구(pop) 최댓값인 레코드
+select *
+from gapminder
+where pop = (
+    select max(pop) from gapminder
+);
+
+
+-- 1인당 GDP 최댓값인 레코드
+select *
+from gapminder
+where gdp_percap = (
+    select max(gdp_percap) from gapminder
+);
+
+-- 우리나라의 통계 자료
+select distinct country from gapminder
+where lower(country) like '%kor%';
+
+select * from gapminder
+where country = 'Korea, Rep.';
+
+-- 대륙별 1인당 GDP 최댓값 레코드
+select continent, max(gdp_percap)
+from gapminder
+group by continent;
+
+select *
+from gapminder
+where (continent, gdp_percap) in (
+    select continent, max(gdp_percap)
+    from gapminder
+    group by continent
+);
+
+-- 연도별, 대륙별 인구수
+select
+    year, continent, sum(pop)
+from gapminder
+group by year, continent
+order by year, continent;
+
+select
+    continent, year, sum(pop)
+from gapminder
+group by continent, year
+order by continent, year;
+
