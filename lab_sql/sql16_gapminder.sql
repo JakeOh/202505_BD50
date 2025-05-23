@@ -297,3 +297,71 @@ group by deptno
 order by deptno;
 
 -- 업무별 급여 합계: (1) group by, (2) pivot
+select job, sum(sal)
+from emp
+where job is not null and sal is not null
+group by job
+order by job;
+
+select *
+from (
+    select job, sal from emp
+    where job is not null and sal is not null
+)
+pivot(sum(sal) 
+        for job in (
+                'ANALYST' as "ANALYST", 
+                'CLERK' as "CLERK", 
+                'MANAGER' as "MANAGER", 
+                'SALESMAN' as "SALESMAN", 
+                'PRESIDENT' as "PRESIDENT")
+    );
+
+
+-- pivot()을 사용한 연도별, 대륙별 인구수
+with t as (
+    select year, continent, pop
+    from gapminder
+)
+select * from t
+pivot(sum(pop) 
+        for continent in ('Africa' as "AFRICA", 
+                            'Americas' as "AMERICAS", 
+                            'Asia' as "ASIA", 
+                            'Europe' as "EUROPE", 
+                            'Oceania' as "OCEANIA")
+)
+order by year;
+
+-- pivot() 사용한 연도별, 대륙별 1인당 GDP의 평균
+with t as (
+    select year, continent, gdp_percap
+    from gapminder
+)
+select 
+    year, round(africa, 2), round(americas, 2), 
+    round(asia, 2), round(europe, 2), round(oceania, 2)
+from t
+pivot(avg(gdp_percap)
+        for continent in ('Africa' as "AFRICA", 
+                            'Americas' as "AMERICAS", 
+                            'Asia' as "ASIA", 
+                            'Europe' as "EUROPE", 
+                            'Oceania' as "OCEANIA")
+)
+order by year;
+
+with t as (
+    select 
+        year, continent, round(avg(gdp_percap), 2) as "AVG_GDP_PERCAP"
+    from gapminder
+    group by year, continent
+)
+select * from t
+pivot(sum(AVG_GDP_PERCAP) 
+        for continent in ('Africa' as "AFRICA", 
+                            'Americas' as "AMERICAS", 
+                            'Asia' as "ASIA", 
+                            'Europe' as "EUROPE", 
+                            'Oceania' as "OCEANIA")
+);
