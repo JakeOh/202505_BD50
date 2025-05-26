@@ -71,4 +71,166 @@ end;
  end;
  /
  
+ /*
+  * case-when 조건문:
+  * case 식
+  *     when 값1 then
+  *         식=값1 일 때 실행할 코드;
+  *     when 값2 then
+  *         식=값2 일 때 실행할 코드;
+  *     ...
+  *     else
+  *         식을 계산했을 때 일치하는 값을 찾을 수 없을 때 실행할 코드;
+  * end case;
+  */
+declare
+    v_score number := 77;
+begin
+    case trunc(v_score / 10)
+        when 10 then
+            dbms_output.put_line('A');
+        when 9 then
+            dbms_output.put_line('A');
+        when 8 then
+            dbms_output.put_line('B');
+        when 7 then
+            dbms_output.put_line('C');
+        when 6 then
+            dbms_output.put_line('D');
+        else
+            dbms_output.put_line('F');
+    end case;
+end;
+/
+ 
+/*
+ * case
+ *      when 조건식1 then
+ *          (조건식1)을 만족할 때 실행할 코드;
+ *      when 조건식2 then
+ *          (조건식2)를 만족할 때 실행할 코드;
+ *      ...
+ *      else
+ *          위의 모든 조건식을 만족하지 못할 때 실행할 코드;
+ * end case;
+ */
+declare
+    v_score number := 87;
+begin
+    case
+        when v_score >= 90 then
+            dbms_output.put_line('A');
+        when v_score >= 80 then
+            dbms_output.put_line('B');
+        when v_score >= 70 then
+            dbms_output.put_line('C');
+        when v_score >= 60 then
+            dbms_output.put_line('D');
+        else
+            dbms_output.put_line('F');
+    end case;
+end;
+/
 
+
+/* 반복문 
+ * (1) LOOP
+ * (2) WHILE ~ LOOP
+ * (3) FOR ~ LOOP
+ */
+
+/*
+ * loop
+ *     반복할 문장;
+ *     EXIT 문장;
+ * end loop;
+ */
+declare
+    v_num number := 1;
+begin
+    loop
+        dbms_output.put_line(v_num);
+        
+        v_num := v_num + 1;
+        /*
+        if v_num > 5 then
+            exit; -- loop를 끝냄(종료)
+        end if;
+        */
+        exit when v_num > 5;
+   end loop;  
+end;
+/
+
+
+-- 5, 4, 3, 2, 1 순서로 한 줄씩 출력.
+declare
+    v_num number := 5;
+begin
+    loop
+        dbms_output.put_line(v_num);
+        v_num := v_num - 1;
+        exit when v_num = 0;
+    end loop;
+end;
+/
+
+/*
+ * while 조건식 loop
+ *     조건식을 만족하는 동안 실행할 코드;
+ * end loop;
+ */
+declare
+    v_num number := 1;
+begin
+    while v_num <= 5 loop
+        dbms_output.put_line(v_num);
+        v_num := v_num + 1;
+    end loop;
+end;
+/
+
+declare
+    v_num number := 5;
+begin
+    while v_num > 0 loop
+        dbms_output.put_line(v_num);
+        v_num := v_num - 1;
+    end loop;
+end;
+/
+
+/*
+ * for 변수 in 시작값..종료값 loop
+ *     반복할 문장;
+ * end loop;
+ * (주의) 시작값은 반드시 종료값보다 작아야 함.
+ */
+ begin
+    for i in 1..5 loop
+        dbms_output.put_line(i);
+    end loop;
+ end;
+ /
+ 
+ begin
+    for x in reverse 1..5 loop
+        dbms_output.put_line(x);
+    end loop;
+ end;
+ /
+ 
+ /* coninue when 조건식; 
+  * 조건식을 만족할 때 continue 아래의 문장들은 무시하고 그 다음 반복을 수행.
+  */
+ begin
+    for x in 1..5 loop
+        continue when x = 3;
+        dbms_output.put_line(x);
+    end loop;
+ end;
+ /
+ 
+ -- 구구단 2단을 출력. 2x1=2, ..., 2x9=18.
+ -- 10 이하의 정수들 중에서 짝수들만 출력. 2, 4, 6, 8, 10.
+ 
