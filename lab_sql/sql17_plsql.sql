@@ -32,6 +32,8 @@
  declare
     -- v_dept_no number(2) := 10;
     v_dept_no dept.deptno%type := 10;
+    
+    -- v_dept_name varchar2(14);
     v_dept_name dept.dname%type;
  begin
     select dname
@@ -47,9 +49,9 @@
  -- empno에는 7788을 할당.
  -- empno가 7788인 직원의 이름과 업무를 검색해서 출력.
  declare
-    v_empno     emp.empno%type := 7788;
-    v_ename     emp.ename%type;
-    v_job       emp.job%type;
+    v_empno     emp.empno%type := 7788;  -- v_empno number(4) := 7788;
+    v_ename     emp.ename%type;  -- v_ename varchar2(10);
+    v_job       emp.job%type;  -- v_job varchar2(9);
  begin
     select ename, job
         into v_ename, v_job
@@ -59,7 +61,6 @@
     dbms_output.put_line('v_ename: ' || v_ename || ', v_job: ' || v_job);
  end;
  /
- 
  
  -- 변수를 테이블의 1개 행(row)의 데이터를 저장하는 타입으로 선언: table%rowtype
  declare
@@ -77,4 +78,46 @@
                         || v_row.loc);
  end;
  /
+ 
+ -- 4자리 정수를 저장할 수 있는 변수, emp 테이블의 1개 행을 저장할 수 있는 변수를 선언
+ -- 정수 변수에는 7788을 할당.
+ -- 사번이 7788인 직원의 레코드를 행 타입 변수에 저장.
+ -- 저장된 내용을 출력.
+ declare
+    v_empno     number(4) := 7788;
+    v_row       emp%rowtype;
+ begin
+    select * into v_row
+        from emp
+        where empno = v_empno;
+        
+    dbms_output.put_line(v_row.empno || ' | '
+                        || v_row.ename || ' | '
+                        || v_row.job || ' | '
+                        || v_row.mgr || ' | '
+                        || v_row.hiredate || ' | '
+                        || v_row.sal || ' | '
+                        || v_row.comm || ' | '
+                        || v_row.deptno);
+ end;
+ /
+ 
+ 
+ -- 사용자가 입력한 값을 세션 변수에 저장하는 방법.
+ -- accept 변수이름 prompt '메시지';
+ accept p_number1 prompt '첫번째 숫자를 입력하세요.';
+ accept p_number2 prompt '두번째 숫자를 입력하세요.';
+ 
+ declare
+    -- 사용자가 입력한 값을 지역 변수에 할당
+    v_num1 number := &p_number1;
+    v_num2 number := &p_number2;
+ begin
+    dbms_output.put_line(v_num1 || ' + ' || v_num2 || ' = ' || (v_num1 + v_num2));
+    dbms_output.put_line(v_num1 || ' - ' || v_num2 || ' = ' || (v_num1 - v_num2));
+    dbms_output.put_line(v_num1 || ' x ' || v_num2 || ' = ' || (v_num1 * v_num2));
+    dbms_output.put_line(v_num1 || ' / ' || v_num2 || ' = ' || (v_num1 / v_num2));
+ end;
+ /
+ 
  
