@@ -232,5 +232,58 @@ end;
  /
  
  -- 구구단 2단을 출력. 2x1=2, ..., 2x9=18.
- -- 10 이하의 정수들 중에서 짝수들만 출력. 2, 4, 6, 8, 10.
+ declare
+    x number := 1;
+ begin
+    while x < 10 loop
+        dbms_output.put_line('2 x ' || x || ' = ' || (2 * x));
+        x := x + 1;
+    end loop;
+ end;
+ /
+ 
+ begin
+    for x in 1..9 loop
+        dbms_output.put_line('2 x ' || x || ' = ' || (2 * x));
+    end loop;
+ end;
+ /
+ 
+ -- 10 이하의 양의 정수들 중에서 짝수들만 출력. 2, 4, 6, 8, 10.
+ begin
+    for n in 1..10 loop /* 1..10 범위의 정수들 중에서 */
+        if mod(n, 2) = 0 then  /* n을 2로 나눈 나머지가 0이면. n이 짝수이면. */
+            dbms_output.put_line(n);  /* n을 출력 */
+        end if;
+    end loop;
+ end;
+ /
+ 
+ begin
+    for n in 1..5 loop
+        dbms_output.put_line(2 * n);
+    end loop;
+ end;
+ /
+ 
+ begin
+    for n in 1..10 loop
+        continue when mod(n, 2) = 1;
+        dbms_output.put_line(n);
+    end loop;
+ end;
+ /
+ 
+ declare
+    n number := 1;
+ begin
+    while n <= 10 loop
+        if mod(n, 2) = 0 then
+            dbms_output.put_line(n);
+            n := n + 1;
+        end if;
+        
+    end loop;
+ end;
+ /
  
