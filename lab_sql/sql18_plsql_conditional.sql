@@ -83,6 +83,18 @@ end;
   *         식을 계산했을 때 일치하는 값을 찾을 수 없을 때 실행할 코드;
   * end case;
   */
+declare 
+    v_num number := 27;
+begin
+    case mod(v_num, 2)
+        when 0 then
+            dbms_output.put_line('짝수');
+        else
+            dbms_output.put_line('홀수');
+    end case;
+end;
+/
+
 declare
     v_score number := 77;
 begin
