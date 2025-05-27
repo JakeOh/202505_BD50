@@ -182,3 +182,38 @@ end;
 select * from dept_temp;
 
 drop table dept_temp;
+
+-- 레코드를 필드(아이템)로 갖는 레코드 선언
+declare
+    type rec_department is record (
+        no number(2),
+        name varchar2(20),
+        location varchar2(20)
+    );
+    
+    type rec_employee is record (
+        no number(4),
+        name varchar2(40),
+        job varchar2(40),
+        salary number,
+        department rec_department
+    );
+    
+    v_emp rec_employee;
+begin
+    select e.empno, e.ename, e.job, e.sal, e.deptno, d.dname, d.loc
+        into v_emp.no, v_emp.name, v_emp.job, v_emp.salary,
+            v_emp.department.no, v_emp.department.name, v_emp.department.location
+        from emp e 
+            join dept d on e.deptno = d.deptno
+        where e.empno = 7788;
+        
+    dbms_output.put_line('사번: ' || v_emp.no);
+    dbms_output.put_line('이름: ' || v_emp.name);
+    dbms_output.put_line('업무: ' || v_emp.job);
+    dbms_output.put_line('급여: ' || v_emp.salary);
+    dbms_output.put_line('부서번호: ' || v_emp.department.no);
+    dbms_output.put_line('부서이름: ' || v_emp.department.name);
+    dbms_output.put_line('부서위치: ' || v_emp.department.location);
+end;
+/
