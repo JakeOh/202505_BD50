@@ -55,3 +55,75 @@ begin
 end;
 /
 
+declare
+    v_name1 varchar2(100);
+    v_phone1 varchar2(100);
+    v_contact_name varchar2(100);
+    v_contact_phone varchar2(100);
+begin
+    v_name1 := '홍길동';
+    v_phone1 := '010-1234-5678';
+    v_contact_name := '오쌤';
+    v_contact_phone := '010-0000-0000';
+end;
+/
+
+declare
+    -- 연락처 레코드 선언
+    type rec_contact is record (
+        name varchar2(100),
+        phone varchar2(100),
+        birthday date
+    );
+    
+    -- 레코드 타입 변수 선언
+    v_contact1 rec_contact;
+    v_contact2 rec_contact;
+begin
+    -- 레코드 타입 변수에 값을 할당.
+    v_contact1.name := '홍길동';
+    v_contact1.phone := '010-1234-5678';
+    v_contact1.birthday := sysdate;
+    
+    -- 레코드에 저장된 값들을 출력.
+    dbms_output.put_line(v_contact1.name || ', '
+                        || v_contact1.phone || ', '
+                        || v_contact1.birthday);
+    
+    v_contact2.name := '오쌤';
+    v_contact2.phone := '010-0000-0000';
+    dbms_output.put_line(v_contact2.name || ', '
+                        || v_contact2.phone || ', '
+                        || v_contact2.birthday);
+end;
+/
+
+-- rec_emp 이름의 레코드 선언
+-- 레코드의 필드(아이템): 사번(empno), 이름(ename), 업무(job), 급여(sal)
+-- 레코드 타입 rec_emp으로 변수 선언
+-- 사번이 7788인 사원의 사번, 이름, 업무, 급여를 레코드 타입 변수에 저장.
+-- 레코드 타입 변수의 내용을 출력.
+declare
+    type rec_emp is record (
+        empno emp.empno%type,
+        ename emp.ename%type,
+        job emp.job%type,
+        sal emp.sal%type
+    );
+    
+    v_emp rec_emp;
+begin
+    select empno, ename, job, sal
+        into v_emp
+        from emp
+        where empno = 7788;
+        
+    dbms_output.put_line(v_emp.empno || ', '
+                        || v_emp.ename || ', '
+                        || v_emp.job || ', '
+                        || v_emp.sal);
+end;
+/
+
+
+
