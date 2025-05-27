@@ -125,5 +125,60 @@ begin
 end;
 /
 
+-- 레코드를 사용한 insert, update를 하기 위한 임시 테이블 생성
+create table dept_temp
+as
+select * from dept;
 
+select * from dept_temp;
 
+declare
+    -- dept_temp 테이블 형태의 레코드를 선언(정의).
+    type rec_dept is record (
+        no dept_temp.deptno%type,
+        name dept_temp.dname%type,
+        loc dept_temp.loc%type
+    );
+    
+    -- rec_dept 타입의 변수 선언
+    v_dept_ins rec_dept;  -- 테이블에 insert할 레코드
+    v_dept_sel rec_dept;  -- 테이블에서 select한 정보를 저장할 레코드
+begin
+    -- insert할 레코드를 생성
+    v_dept_ins.no := 99;
+    v_dept_ins.name := 'DB';
+    v_dept_ins.loc := 'Seoul';
+    
+    -- insert DML을 실행
+    insert into dept_temp 
+        values v_dept_ins;
+        -- values (v_dept_ins.no, v_dept_ins.name, v_dept_ins.loc);
+    
+    dbms_output.put_line(SQL%ROWCOUNT || '개 행이 삽입됨');
+    
+    -- select 문을 실행
+    select * into v_dept_sel
+        from dept_temp
+        where deptno = 99;
+    
+    dbms_output.put_line(v_dept_sel.no || ', '
+                        || v_dept_sel.name || ', '
+                        || v_dept_sel.loc);
+
+    -- update를 하기 위해서 v_dept_sel의 일부 필드(값)을 변경
+    v_dept_sel.name := 'Database';
+    v_dept_sel.loc := '서울';
+    
+    -- update DML 문장을 실행.
+    update dept_temp
+        set row = v_dept_sel
+        /* set deptno = v_dept_sel.no, dname = v_dept_sel.name, loc = v_dept_sel.loc */
+        where deptno = v_dept_sel.no;
+    
+    dbms_output.put_line(SQL%ROWCOUNT || '개 행이 업데이트됨.');
+end;
+/
+
+select * from dept_temp;
+
+drop table dept_temp;
