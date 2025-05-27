@@ -59,3 +59,19 @@ exception
         dbms_output.put_line('BACKTRACE = ' || dbms_utility.format_error_backtrace);
 end;
 /
+
+declare
+    v_dept_no number := 10;
+    v_dept_name varchar2(20);
+begin
+    select dname into v_dept_name
+        from dept
+        where deptno = v_dept_no;
+        
+    dbms_output.put_line('부서이름: ' || v_dept_name);
+exception
+    when others then
+        dbms_output.put_line('SQLERRM = ' || sqlerrm);
+        dbms_output.put_line('BACKTRACE = ' || dbms_utility.format_error_backtrace);
+end;
+/
