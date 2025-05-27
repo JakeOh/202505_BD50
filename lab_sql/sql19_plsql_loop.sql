@@ -25,7 +25,7 @@ begin
         end if;
         */
         exit when v_num > 5;
-   end loop;  
+   end loop;
 end;
 /
 
@@ -213,6 +213,25 @@ begin
         end loop;
         
         dbms_output.put_line('----------');
+    end loop;
+end;
+/
+
+declare
+    x number := 2;
+    y number;
+begin
+    while x < 10 loop
+        dbms_output.put_line(x || '단');
+        
+        y := 1;
+        while y <= x loop
+            dbms_output.put_line(x || ' x ' || y || ' = ' || (x * y));
+            y := y + 1;
+        end loop;
+        dbms_output.put_line('----------');
+        
+        x := x + 1;
     end loop;
 end;
 /
