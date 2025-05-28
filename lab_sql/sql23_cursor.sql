@@ -70,3 +70,31 @@ begin
     close c;
 end;
 /
+
+-- 파라미터를 갖는 커서 선언 예제
+declare
+    -- 커서 선언: CURSOR 커서_이름(파라미터_이름 파라미터_타입, ...) IS SQL문;
+    cursor c(p_no dept.deptno%type) is
+        select * from dept where deptno = p_no;
+    
+    -- 행 1개 데이터를 저장하기 위한 변수.
+    v_row dept%rowtype;
+begin
+    -- 파라미터를 갖는 커서 열기(open)
+    open c(10);
+    -- fetch
+    fetch c into v_row;
+    dbms_output.put_line(v_row.deptno || ' : '
+                        || v_row.dname || ' : '
+                        || v_row.loc);
+    -- 커서 닫기(close)
+    close c;
+    
+    open c(20);
+    fetch c into v_row;
+    dbms_output.put_line(v_row.deptno || ' : '
+                        || v_row.dname || ' : '
+                        || v_row.loc);
+    close c;
+end;
+/
