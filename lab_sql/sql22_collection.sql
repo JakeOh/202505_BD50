@@ -113,6 +113,44 @@ end;
  * - 변수 선언과 동시에 값들을 초기화할 수 있음.
  * - VARRAY의 크기(길이)가 지정된 최대 크기보다 작다면 크기를 늘릴 수 있음.
  * (문법)
- * TYPE 배열이름 IS VARRAY OF 값_타입;
+ * TYPE 배열이름 IS VARRAY(최대크기) OF 값_타입;
  */
+ 
+ declare
+    -- 문자열을 최대 5개까지 저장할 수 있는 VARRAY를 선언
+    type varr is varray(5) of varchar2(50);
+    
+    -- VARRAY 타입의 변수를 선언과 초기화
+    -- varr(): 빈(empty) 배열이 생성.
+    v_fruits varr := varr('apple', 'banana', 'cherry');
+ begin
+    dbms_output.put_line('COUNT: ' || v_fruits.count);
+    dbms_output.put_line('FIRST: ' || v_fruits.first);
+    dbms_output.put_line('LAST: ' || v_fruits.last);
+    --> varray에서 count와 last의 반환값은 항상 같음.
+    
+    for i in 1..v_fruits.count loop
+        dbms_output.put_line('index ' || i || ': ' || v_fruits(i));
+    end loop;
+    
+    -- 배열 크기 늘리기: EXTEND(개수)
+    -- 아규먼트를 전달하지 않으면 배열 크기를 1개만 늘려줌.
+    v_fruits.extend(2);  -- 배열에 2개의 빈 공간(null)을 추가.
+    dbms_output.put_line('EXTEND 후 COUNT: ' || v_fruits.count);
+    
+    v_fruits(4) := '수박';
+    v_fruits(5) := '참외';
+    
+    -- 바뀐 배열의 내용을 출력
+    for i in 1 .. v_fruits.count loop
+        dbms_output.put_line(i || ' : ' || v_fruits(i));
+    end loop;
+    
+    -- v_fruits.extend();
+    --> v_fruits 변수는 최대 5개까지 저장할 수 있는 VARRAY.
+    --> COUNT가 최댓값에 도달했기 때문에 더이상 확장(extend)할 수 없음.
+    --> ORA-06532: 첨자(suscriptor, 인덱스)가 한계치(5)를 넘었습니다
+ end;
+ /
+ 
 
