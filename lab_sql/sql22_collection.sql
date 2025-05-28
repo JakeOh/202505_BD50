@@ -55,6 +55,9 @@ declare
     
     -- 연관 배열 타입 변수 선언
     v_names assoc_arr;
+    
+    -- 연관 배열의 인덱스를 저장할 변수 선언
+    key pls_integer;
 begin
     -- 연관 배열에 데이터 저장.
     v_names(7788) := 'Scott';
@@ -65,6 +68,51 @@ begin
     dbms_output.put_line('FIRST: ' || v_names.first);
     dbms_output.put_line('LAST: ' || v_names.last);
     --> 연관 배열은 키(인덱스)를 (오름차순) 정렬해서 사용.
+    
+    -- 반복문과 컬렉션 함수를 사용한 데이터 읽기
+    key := v_names.first;  -- 연관 배열의 첫번째 인덱스를 변수 key에 저장.
+    while key is not null loop
+        dbms_output.put_line(key || ' : ' || v_names(key));
+        key := v_names.next(key);  -- key 다음의 인덱스를 변수 key에 저장.
+    end loop;
 end;
 /
+
+declare
+    -- 문자열을 인덱스로 갖고, 정수를 값으로 갖는 연관 배열을 선언.
+    type assoc_arr is table of pls_integer index by varchar2(50);
+    
+    -- 연관 배열 타입 변수 선언
+    v_menu assoc_arr;
+    
+    -- 연관 배열의 인덱스를 저장하기 위한 변수 선언
+    key varchar2(50);
+begin
+    -- 연관 배열에 데이터 저장
+    v_menu('아메리카노') := 1000;
+    v_menu('라떼') := 1500;
+    v_menu('카푸치노') := 1500;
+    v_menu('에이드') := 2000;
+    
+    -- 반복문을 사용해서 연관 배열 v_menu의 데이터(키-값)들을 출력.
+    key := v_menu.first;
+    while key is not null loop
+        dbms_output.put_line(key || ' : ' || v_menu(key));
+        key := v_menu.next(key);
+    end loop;
+    
+end;
+/
+
+
+/*
+ * VARRAY: variable-size array. 가변 길이 배열.
+ * - 인덱스는 1부터 시작하고, 연속된 정수를 인덱스로 가짐.
+ * - 저장하는 값의 타입은 제한이 없음.
+ * - VARRAY는 선언할 때 배열의 최대 크기를 지정해야만 함.
+ * - 변수 선언과 동시에 값들을 초기화할 수 있음.
+ * - VARRAY의 크기(길이)가 지정된 최대 크기보다 작다면 크기를 늘릴 수 있음.
+ * (문법)
+ * TYPE 배열이름 IS VARRAY OF 값_타입;
+ */
 
