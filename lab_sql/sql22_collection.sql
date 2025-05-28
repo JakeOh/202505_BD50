@@ -112,6 +112,7 @@ end;
  * - VARRAY는 선언할 때 배열의 최대 크기를 지정해야만 함.
  * - 변수 선언과 동시에 값들을 초기화할 수 있음.
  * - VARRAY의 크기(길이)가 지정된 최대 크기보다 작다면 크기를 늘릴 수 있음.
+ * - VARRAY는 생성자를 호출해서 배열을 생성한 후부터 값들을 저장할 수 있음.
  * (문법)
  * TYPE 배열이름 IS VARRAY(최대크기) OF 값_타입;
  */
@@ -122,7 +123,7 @@ end;
     
     -- VARRAY 타입의 변수를 선언과 초기화
     -- varr(): 빈(empty) 배열이 생성.
-    v_fruits varr := varr('apple', 'banana', 'cherry');
+    v_fruits varr := varr('apple', 'banana', 'cherry');  -- 생성자 호출
  begin
     dbms_output.put_line('COUNT: ' || v_fruits.count);
     dbms_output.put_line('FIRST: ' || v_fruits.first);
@@ -153,4 +154,28 @@ end;
  end;
  /
  
-
+-- VARRAY를 사용해서 숫자 데이터들의 합계와 평균을 계산하는 예제
+declare
+    -- 정수들을 최대 5개까지 저장할 수 있는 VARRAY 타입을 선언.
+    type int_array is varray(5) of pls_integer;
+    
+    -- int_array 타입의 변수를 선언, 빈 배열로 초기화.
+    v_numbers int_array := int_array();  -- 생성자 호출.
+    
+begin
+    -- v_numbers의 크기를 5로 확장
+    v_numbers.extend(5);
+    
+    -- v_numbers에 정수 난수 5개를 저장.
+    for i in 1 .. v_numbers.count loop
+        -- 배열의 인덱스 i번째 위치에 1~10 사이의 정수 난수를 저장.
+        v_numbers(i) := dbms_random.value(1, 10);
+    end loop;
+    
+    -- v_numbers에 저장된 값들을 출력.
+    for i in 1 .. v_numbers.count loop
+        dbms_output.put_line('[' || i || '] ' || v_numbers(i));
+    end loop;
+    
+end;
+/
