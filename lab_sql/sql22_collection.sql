@@ -162,6 +162,11 @@ declare
     -- int_array 타입의 변수를 선언, 빈 배열로 초기화.
     v_numbers int_array := int_array();  -- 생성자 호출.
     
+    -- v_numbers의 정수들의 합계를 저장하기 위한 변수 선언.
+    v_total pls_integer := 0;
+    
+    -- v_numbers의 정수들의 평균을 저장하기 위한 변수 선언.
+    v_average number;
 begin
     -- v_numbers의 크기를 5로 확장
     v_numbers.extend(5);
@@ -177,5 +182,54 @@ begin
         dbms_output.put_line('[' || i || '] ' || v_numbers(i));
     end loop;
     
+    -- v_numbers에 저장된 값들의 합계를 계산.
+    -- v_total := v_numbers(1) + v_numbers(2) + v_numbers(3) + v_numbers(4) + v_numbers(5);
+    for i in 1 .. v_numbers.count loop
+        v_total := v_total + v_numbers(i);
+        -- dbms_output.put_line('v_total = ' || v_total);
+    end loop;
+    dbms_output.put_line('v_total = ' || v_total);
+    
+    v_average := v_total / v_numbers.count;  -- 평균
+    dbms_output.put_line('v_average = ' || v_average);
+    
+end;
+/
+
+
+/*
+ * 중첩 테이블(nested table)
+ * - VARRAY와 같이, 1부터 시작하는 연속된 정수 인덱스만 가질 수 있음.
+ * - VARRAY와 같이, 생성자를 호출해야 사용할 수 있음.
+ * - VARRAY와 달리, 최대 크기가 고정되어 있지 않음. 연관 배열과 비슷.
+ * (문법)
+ * TYPE 타입_이름 IS TABLE OF 값_타입;
+ */
+
+declare
+    -- 문자열을 저장하는 중첩 테이블 타입 선언.
+    type nest_tbl is table of varchar2(50);
+    
+    -- 중첩 테이블 nest_tbl 타입의 변수를 선언, 초기화
+    v_fruits nest_tbl := nest_tbl('apple', 'banana');  -- 생성자 호출
+begin
+    dbms_output.put_line('COUNT: ' || v_fruits.count);
+    
+    -- 중첩 테이블에 저장된 값들을 인덱스 순서대로 출력.
+    for i in 1 .. v_fruits.count loop
+        dbms_output.put_line('[' || i || '] ' || v_fruits(i));
+    end loop;
+    
+    -- 중첩 테이블에 값을 추가.
+    v_fruits.extend();  -- 중첩 테이블의 크기를 1개 확장
+    v_fruits(3) := '수박';
+    
+    v_fruits.extend(2);  -- 중첩 테이블의 크기를 2개 확장
+    v_fruits(5) := '복숭아';
+    
+    -- 데이터들이 추가된 중첩 테이블의 내용을 출력.
+    for i in 1 .. v_fruits.count loop
+        dbms_output.put_line('[' || i || '] ' || v_fruits(i));
+    end loop;
 end;
 /
