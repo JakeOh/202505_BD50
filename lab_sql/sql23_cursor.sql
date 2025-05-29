@@ -143,6 +143,51 @@ end;
 
 
 /*
- *
+ * 암묵적(묵시적) 커서(implicit cursor)
+ * 명시적인 커서 선언 없이 PL/SQL 블록 안에서 SQL문을 사용했을 때 자동으로 선언되는 커서.
+ * OPEN, FETCH, CLOSE를 명시적으로 사용하지 않음.
+ * 묵시적 커서의 속성:
+ * - SQL%FOUND: 묵시적 커서가 추출(select)한 행이 있거나, DML 문으로 변경(insert/update/delete)된 행이 있으면 true.
+ * - SQL%NOTFOUND: 묵시적 커서가 추출한 행이 없거나, DML 문으로 변경된 행이 없을 때 true.
+ * - SQL%ROWCOUNT: 묵시적 커거사 추출한 행의 개수 또는 DML 문으로 영향을 받은 행의 개수.
+ * - SQL%ISOPEN: 커서가 open된 상태이면 true, close된 상태이면 false.
+ *   -- 묵시적 커서는 SQL 문이 실행된 후 자동으로 close가 되기 때문에 ISOPEN 속성은 항상 false를 반환.
  */
 
+declare
+    v_no emp.empno%type := 7788;
+    v_row emp%rowtype;
+begin
+    -- 묵시적 커서
+    select * into v_row
+        from emp
+        where empno = v_no;
+    
+    if sql%isopen then
+        dbms_output.put_line('OPEN');
+    else
+        dbms_output.put_line('CLOSED');
+    end if;
+    
+    dbms_output.put_line('row count: ' || sql%rowcount);
+    
+    if sql%found then
+        dbms_output.put_line('FOUND');
+        dbms_output.put_line(v_row.empno || ' : ' || v_row.ename);
+    end if;
+    
+    if sql%notfound then
+        dbms_output.put_line('NOT FOUND');
+    end if;
+end;
+/
+
+-- 묵시적 커서를 사용한 DELETE 문 실행과 처리 결과
+begin
+    -- 묵시적 커서
+    delete from emp_copy where empno = 7844;
+    
+    -- delete 문 실행 결과 -> 삭제된 행의 개수
+    dbms_output.put_line(sql%rowcount || '개 행이 삭제됨.');
+end;
+/
