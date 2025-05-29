@@ -228,44 +228,82 @@ end;
 -- 연습 문제 1.
 declare
     -- empno, ename, job, sal을 저장하는 레코드 타입을 선언.
-    type rec_emp is ... ();
+    type rec_emp is record (
+        empno emp.empno%type,
+        ename emp.ename%type,
+        job emp.job%type,
+        sal emp.sal%type
+    );
     
     -- 정수를 인덱스로 갖고, rec_emp 타입으로 값으로 갖는 연관 배열을 선언.
-    type itab_emp is ...;
+    type itab_emp is table of rec_emp index by pls_integer;
     
     -- 연관 배열 타입의 변수를 선언.
-    emp_tbl ...;
+    emp_tbl itab_emp;
     
     -- emp 테이블에서 empno, ename, job, sal을 검색하는 커서를 선언.
-    cursor c is ...;
+    cursor c is 
+        select empno, ename, job, sal from emp;
     
+    -- 연관 배열의 인덱스로 사용할 변수. 배열에 레코드를 저장할 때마다 1씩 증가.
     i pls_integer := 1;
 begin
     -- for-in loop을 사용해서 커서를 실행하고, 그 결과들을 연관 배열 emp_tbl에 저장.
+    for r in c loop
+        emp_tbl(i) := r;
+        i := i + 1;
+    end loop;
     
     -- 연관 배열 emp_tbl의 내용을 출력.
+    for i in 1 .. emp_tbl.count loop
+        dbms_output.put_line(emp_tbl(i).empno || ' : '
+                            || emp_tbl(i).ename || ' : '
+                            || emp_tbl(i).job || ' : '
+                            || emp_tbl(i).sal);
+    end loop;
 end;
 /
 
 -- 연습 문제 2.
 declare
     -- empno, ename, job, dname을 저장하는 레코드 타입을 선언.
-    type rec_emp is ... ();
+    type rec_emp is record (
+        empno number,
+        ename varchar2(40),
+        job varchar2(40),
+        dname varchar2(20)
+    );
     
     -- 정수를 인덱스로 갖고, rec_emp 타입으로 값으로 갖는 연관 배열을 선언.
-    type itab_emp is ...;
+    type itab_emp is table of rec_emp index by pls_integer;
     
     -- 연관 배열 타입의 변수를 선언.
-    emp_tbl ...;
+    emp_tbl itab_emp;
     
     -- 부서번호(deptno)를 파라미터로 전달받아서,
     -- emp 테이블과 dept 테이블에서 empno, ename, job, dname을 검색하는 커서를 선언.
-    cursor c is ...;
+    cursor c(p_no dept.deptno%type) is 
+        select e.empno, e.ename, e.job, d.dname
+            from emp e
+                join dept d on e.deptno = d.deptno
+            where e.deptno = p_no;
     
     i pls_integer := 1;
 begin
     -- for-in loop을 사용해서 커서를 실행하고, 그 결과들을 연관 배열 emp_tbl에 저장.
+    for r in c(20) loop
+        emp_tbl(i) := r;
+        i := i + 1;
+    end loop;
+    
+    dbms_output.put_line('# of rows: ' || emp_tbl.count);
     
     -- 연관 배열 emp_tbl의 내용을 출력.
+    for i in 1 .. emp_tbl.count loop
+        dbms_output.put_line(emp_tbl(i).empno || ' : '
+                            || emp_tbl(i).ename || ' : '
+                            || emp_tbl(i).job || ' : '
+                            || emp_tbl(i).dname);
+    end loop;
 end;
 /
