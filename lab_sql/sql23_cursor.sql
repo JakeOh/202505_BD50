@@ -98,3 +98,51 @@ begin
     close c;
 end;
 /
+
+-- 명시적 커서와 FOR-IN LOOP(반복문)
+-- FOR 변수 IN 커서 LOOP ... END LOOP;
+-- 명시적으로 open, fetch, close를 호출하지 않아도 자동으로 실행됨.
+-- open, fetch, close 과정이 암묵적으로 실행됨.
+declare
+    -- 명시적 커서 선언
+    cursor c is
+        select * from dept;
+begin
+    -- for-in 구문에서 커서 사용하기
+    for v_row in c loop
+        dbms_output.put_line(v_row.deptno || ' : '
+                            || v_row.dname || ' : '
+                            || v_row.loc);
+    end loop;
+end;
+/
+
+
+-- 명시적 커서 선언 없이 FOR-IN LOOP 사용
+begin
+    for r in (select * from dept) loop
+        dbms_output.put_line(r.deptno || ' : '
+                            || r.dname || ' : '
+                            || r.loc);
+    end loop;
+end;
+/
+
+declare
+    cursor c(p_no emp.empno%type) is
+        select * from emp where empno = p_no;
+begin
+    for r in c(7369) loop
+        dbms_output.put_line(r.empno || ' : '
+                            || r.ename || ' : '
+                            || r.job || ' : '
+                            || r.deptno);
+    end loop;
+end;
+/
+
+
+/*
+ *
+ */
+
