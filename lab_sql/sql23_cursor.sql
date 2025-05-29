@@ -224,3 +224,48 @@ begin
     end loop;
 end;
 /
+
+-- 연습 문제 1.
+declare
+    -- empno, ename, job, sal을 저장하는 레코드 타입을 선언.
+    type rec_emp is ... ();
+    
+    -- 정수를 인덱스로 갖고, rec_emp 타입으로 값으로 갖는 연관 배열을 선언.
+    type itab_emp is ...;
+    
+    -- 연관 배열 타입의 변수를 선언.
+    emp_tbl ...;
+    
+    -- emp 테이블에서 empno, ename, job, sal을 검색하는 커서를 선언.
+    cursor c is ...;
+    
+    i pls_integer := 1;
+begin
+    -- for-in loop을 사용해서 커서를 실행하고, 그 결과들을 연관 배열 emp_tbl에 저장.
+    
+    -- 연관 배열 emp_tbl의 내용을 출력.
+end;
+/
+
+-- 연습 문제 2.
+declare
+    -- empno, ename, job, dname을 저장하는 레코드 타입을 선언.
+    type rec_emp is ... ();
+    
+    -- 정수를 인덱스로 갖고, rec_emp 타입으로 값으로 갖는 연관 배열을 선언.
+    type itab_emp is ...;
+    
+    -- 연관 배열 타입의 변수를 선언.
+    emp_tbl ...;
+    
+    -- 부서번호(deptno)를 파라미터로 전달받아서,
+    -- emp 테이블과 dept 테이블에서 empno, ename, job, dname을 검색하는 커서를 선언.
+    cursor c is ...;
+    
+    i pls_integer := 1;
+begin
+    -- for-in loop을 사용해서 커서를 실행하고, 그 결과들을 연관 배열 emp_tbl에 저장.
+    
+    -- 연관 배열 emp_tbl의 내용을 출력.
+end;
+/
