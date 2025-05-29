@@ -191,3 +191,36 @@ begin
     dbms_output.put_line(sql%rowcount || '개 행이 삭제됨.');
 end;
 /
+
+-- DEPT 테이블의 행들을 저장할 수 있는 연관 배열(index-by table)을 선언.
+-- FOR-IN LOOP와 묵시적 커서를 사용해서
+-- DEPT 테이블에서 select한 내용을 연관 배열에 순서대로 저장.
+-- 연관 배열의 내용을 출력.
+declare
+    -- 정수를 인덱스로 갖고, DEPT 테이블의 행을 값으로 갖는 연관 배열을 선언.
+    type index_table is table of dept%rowtype index by pls_integer;
+    
+    -- 연관 배열 타입의 변수 선언
+    v_dept_tbl index_table;
+    
+    -- 연관 배열에서 레코드(행 1개)를 저장할 위치(인덱스)로 사용하기 위한 변수.
+    i pls_integer := 1;
+begin
+    -- 묵시적 커서를 사용해서 DEPT 테이블의 레코드들을 읽어옴.
+    for r in (select * from dept) loop
+        -- 묵시적 커서에서 fetch한 데이터를 연관 배열에 저장.
+        v_dept_tbl(i) := r;
+        
+        -- 다을 레코드를 저장하기 위해서 인덱스 값을 1 증가.
+        i := i + 1;
+    end loop;
+    
+    dbms_output.put_line('DEPT 레코드 개수 = ' || v_dept_tbl.count);
+    
+    for i in 1 .. v_dept_tbl.count loop
+        dbms_output.put_line(v_dept_tbl(i).deptno || ' : '
+                            || v_dept_tbl(i).dname || ' : '
+                            || v_dept_tbl(i).loc);
+    end loop;
+end;
+/
