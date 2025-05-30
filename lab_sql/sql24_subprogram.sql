@@ -21,6 +21,8 @@
  * END [함수이름];
  */
 
+set serveroutput on;
+
 create or replace function adder(x number, y number)
     return number
 is
@@ -82,5 +84,47 @@ begin
 end my_mod;
 /
 
-select my_mod(10, 3) from dual;
+select my_mod(10, 3), my_mod(11, 3), my_mod(12, 3) from dual;
 
+-- 함수 이름: get_dept_loc
+-- 기능: 부서 번호가 주어지면 부서의 위치를 리턴하는 함수.
+create or replace function get_dept_loc(p_no number) 
+    return varchar2
+is
+    -- select 결과 행의 개수를 저장하기 위한 변수
+    v_count number := 0;
+    
+    -- 부서번호 p_no에 해당하는 부서 위치를 저장하기 위한 변수
+    v_dept_loc dept.loc%type;
+begin
+    select count(loc) into v_count
+        from dept
+        where deptno = p_no;
+
+    if v_count = 0 then
+        v_dept_loc := '-----';
+    else
+        -- 묵시적 커서(implicit cursor)
+        select loc into v_dept_loc
+            from dept
+            where deptno = p_no;
+    end if;
+
+    return v_dept_loc;
+end get_dept_loc;
+/
+
+select get_dept_loc(10), get_dept_loc(40), get_dept_loc(50)
+from dual;
+
+declare
+    -- 함수 get_dept_loc의 반환값을 저장하기 위한 변수
+    v_result varchar2(20);
+begin
+    v_result := get_dept_loc(20);
+    dbms_output.put_line('20번 부서의 위치는 ' || v_result);
+    
+    v_result := get_dept_loc(30);
+    dbms_output.put_line('30번 부서의 위치는 ' || v_result);
+end;
+/
