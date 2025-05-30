@@ -287,3 +287,70 @@ from dual;
  execute delete_dept(50);
  select * from dept;
  
+ create or replace procedure print_line(msg varchar2)
+ is
+ begin
+    dbms_output.put_line(msg);
+ end print_line;
+ /
+ 
+ execute print_line('안녕하세요' || ' 여러분!');
+
+/*
+ * 파라미터 선언에서 사용할 수 있는 키워드:
+ * - IN: 호출하는 곳에서 값을 전달할 때. 생략 가능.
+ * - OUT: 함수/프로시저가 호출한 곳으로 값을 전달할 때.
+ * - IN OUT: 호출하는 곳에서 아규먼트를 전달할 수도 있고, 호출한 곳으로 값을 내보낼 수도 있음.
+ * (문법) 파라미터_이름 [IN | OUT | IN OUT] 파라미터_타입 [:= 기본값]
+ */
+
+create or replace procedure get_emp_name_sal(
+        p_empno in number,  -- 키워드 in은 생략 가능
+        p_ename out varchar2,
+        p_sal out number
+)
+is
+begin
+    select ename, sal 
+        into p_ename, p_sal
+        from emp
+        where empno = p_empno;
+end get_emp_name_sal;
+/
+
+declare
+    v_empno number := 7900;  -- 프로시저에게 사번으로 전달할 변수
+    v_ename varchar2(20);  -- 사원 이름을 프로시저로부터 전달받기 위한 변수
+    v_sal number;  -- 급여를 프로시저로부터 전달받기 위한 변수
+begin
+    print_line('호출 전 v_empno = ' || v_empno);
+    print_line('호출 전 v_ename = ' || v_ename);
+    print_line('호출 전 v_sal = ' || v_sal);
+    
+    get_emp_name_sal(v_empno, v_ename, v_sal);
+    
+    print_line('호출 후 v_empno = ' || v_empno);
+    print_line('호출 후 v_ename = ' || v_ename);
+    print_line('호출 후 v_sal = ' || v_sal);
+end;
+/
+
+create or replace procedure double_number(p_num in out number)
+is
+begin
+    p_num := p_num * 2;
+end double_number;
+/
+
+declare
+    v_number number := 123;
+begin
+    print_line('호출 전 v_number = ' || v_number);
+    
+    double_number(v_number);
+    
+    print_line('호출 후 v_number = ' || v_number);
+end;
+/
+
+ 
