@@ -403,9 +403,56 @@ end;
     type itab_emp is table of rec_emp index by pls_integer;
     
     -- 함수 선언
+    -- 사번을 주면, 직원 레코드를 리턴.
+    function get_emp_record(p_empno emp.empno%type) 
+        return rec_emp;
+    
+    -- 부서 번호를 주면, 그 부서에서 근무하는 직원들의 레코드를 리턴.
     function get_emp_list(p_deptno emp.deptno%type) 
         return itab_emp;
     
+ end my_pkg;
+ /
+ 
+ -- 패키지 몸체 작성.
+ create or replace package body my_pkg
+ is
+    -- get_emp_record 함수 구현
+    function get_emp_record(p_empno emp.empno%type)
+        return rec_emp
+    is
+        v_emp rec_emp;  -- 파라미터 p_empno를 갖는 직원 정보를 저장하기 위해서.
+    begin
+        select e.empno, e.ename, e.job, e.sal, d.dname
+            into v_emp
+            from emp e
+                join dept d on e.deptno = d.deptno
+            where e.empno = p_empno;
+        
+        return v_emp;
+    end get_emp_record;
+    
+    -- get_emp_list 함수 구현
+    function get_emp_list(p_deptno emp.deptno%type)
+        return itab_emp
+    is
+        v_emp_list itab_emp;  -- 부서에 근무하는 직원들 레코드를 저장, 리턴.
+        v_idx pls_integer := 1;  -- 연관 배열의 인덱스.
+        
+        cursor cursor_emp_list is
+            select e.empno, e.ename, e.job, e.sal, d.dname
+            from emp e
+                join dept d on e.deptno = d.deptno
+            where e.deptno = p_deptno
+            order by e.empno;
+    begin
+        for r in cursor_emp_list loop
+            v_emp_list(v_idx) := r;
+            v_idx := v_idx + 1;
+        end loop;
+        
+        return v_emp_list;
+    end get_emp_list;
  end my_pkg;
  /
  
