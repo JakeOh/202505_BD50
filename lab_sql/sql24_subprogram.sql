@@ -354,3 +354,58 @@ end;
 /
 
  
+ /*
+  * 패키지(Package)
+  * - 타입 또는 서브 프로그램(함수, 프로시저)들을 그룹화하기 위해서 사용.
+  * - 유사한 또는 관련된 기능들을 패키지로 묶음.
+  * - 패키지는 두 부분으로 구성.
+  *   (1) 패키지 사양: 타입 선언. 함수 또는 프로시저의 선언만 있고, 구현부가 없음.
+  *   (2) 패키지 몸체(body): 함수 또는 프로시저의 구현부(IS-BEGIN-END)를 작성.
+  *
+  * (문법) 패키지 사양
+  * CREATE [OR REPLACE] PACKAGE 패키지_이름
+  * IS
+  *     -- 타입 선언(레코드, 컬렉션)
+  *     -- 함수, 프로시저의 선언부
+  * END [패키지_이름];
+  *
+  * (문법) 패키지 몸체
+  * CREATE [OR REPLACE] PACKAGE BODY 패키지_이름
+  * IS
+  *     -- 패키지 사양에서 선언된 함수 또는 프로시저를 구현
+  * END [패키지_이름];
+  */
+ begin
+    dbms_output.put('Hello');
+    dbms_output.put('안녕');
+    dbms_output.put_line('SQL');
+    dbms_output.put_line('PL/SQL');
+    
+    print_line('value() 난수: ' || dbms_random.value());
+    print_line('value() 난수: ' || dbms_random.value(1, 10));
+    print_line('random() 난수: ' || dbms_random.random());
+ end;
+ /
+ 
+ -- 패키지 사양 작성.
+ create or replace package my_pkg
+ is
+    -- 레코드 선언
+    type rec_emp is record (
+        empno   emp.empno%type,
+        ename   emp.ename%type,
+        job     emp.job%type,
+        sal     emp.sal%type,
+        dname   dept.dname%type
+    );
+    
+    -- 연관 배열 선언
+    type itab_emp is table of rec_emp index by pls_integer;
+    
+    -- 함수 선언
+    function get_emp_list(p_deptno emp.deptno%type) 
+        return itab_emp;
+    
+ end my_pkg;
+ /
+ 
