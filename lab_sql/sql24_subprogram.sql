@@ -456,3 +456,27 @@ end;
  end my_pkg;
  /
  
+ -- 패키지에서 선언한 타입, 함수, 프로시저 사용하기
+ -- 패키지_이름.타입, 패키지_이름.함수, 패키지_이름.프로시저
+ declare
+    v_emp       my_pkg.rec_emp;
+    v_emp_list  my_pkg.itab_emp;
+ begin
+    v_emp := my_pkg.get_emp_record(7788);
+    print_line('사번: ' || v_emp.empno 
+                || ', 이름: ' || v_emp.ename
+                || ', 업무: ' || v_emp.job
+                || ', 급여: ' || v_emp.sal
+                || ', 부서: ' || v_emp.dname);
+    
+    v_emp_list := my_pkg.get_emp_list(30);
+    for i in 1 .. v_emp_list.count loop
+        print_line('사번: ' || v_emp_list(i).empno 
+                    || ', 이름: ' || v_emp_list(i).ename
+                    || ', 업무: ' || v_emp_list(i).job
+                    || ', 급여: ' || v_emp_list(i).sal
+                    || ', 부서: ' || v_emp_list(i).dname);
+    end loop;
+ end;
+ /
+ 
