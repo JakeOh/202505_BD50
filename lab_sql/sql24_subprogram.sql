@@ -180,3 +180,63 @@ select d.*,
 from dept d
 where deptno = 30;
 
+
+-- 파라미터를 갖지 않는 함수 선언(정의)할 때는 "(파라미터 선언)"을 사용하지 않음.
+create or replace function get_emp_count
+    return number
+is
+    v_count number;
+begin
+    select count(*) into v_count
+        from emp;
+        
+    return v_count;
+end get_emp_count;
+/
+
+-- 파라미터를 갖지 않는 함수를 호출할 때는, "함수이름()" 또는 "함수이름" 호출 가능.
+select get_emp_count(), get_emp_count
+from dual;
+
+
+/*
+ * Procedure(프로시저)
+ * - 특정 작업을 수행하는 서브 프로그램. 값을 반환하지 않는 서브 프로그램.
+ * - SQL 문 안에서 호출할 수 없음. select 프로시저 from dual; 은 불가!
+ * - EXECUTE 프로시저; 형식으로 호출할 수 있음.
+ * - PL/SQL 블록 안에서는 호출 가능.
+ * - 프로시저도 return 문장을 사용할 수 있음. (예) return;
+ * - 프로시저에서 return 문장의 의미는 프로시저를 종료한다는 의미.
+ * (문법)
+ * CREATE [OR REPLACE] PROCEDURE 프로시저_이름 [(파라미터 선언, ...)]
+ * IS
+ *     -- 프로시저가 사용할 지역 변수 선언.
+ * BEGIN
+ *     -- 프로시저 해야할 일(코드)
+ * [EXCEPTION 예외처리 코드;]
+ * END [프로시저_이름];
+ */
+ 
+ -- 파라미터를 갖지 않는 프로시저
+ create or replace procedure get_emp_scott
+ is
+    v_empno number := 7788;  -- 변수 선언 & 값을 할당.
+    v_ename varchar2(10);  -- 변수 선언.
+ begin
+    v_ename := 'Scott';
+    dbms_output.put_line(v_ename || '의 사번은 ' || v_empno || '입니다.');
+    return;  --> 프로시저를 종료한다는 의미. 생략 가능.
+ end get_emp_scott;
+ /
+ 
+ -- 프로시저를 단독으로 실행.
+ execute get_emp_scott;
+ execute get_emp_scott();
+ 
+ -- PL/SQL 블록 안에서 프로시저 실행.
+ begin
+    get_emp_scott();
+    get_emp_scott;
+ end;
+ /
+ 
