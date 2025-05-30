@@ -128,3 +128,55 @@ begin
     dbms_output.put_line('30번 부서의 위치는 ' || v_result);
 end;
 /
+
+select * from emp where deptno = 20;
+
+select
+    deptno, dname, loc,
+    (select min(sal) from emp where deptno = 30) as "MIN_SAL",
+    (select max(sal) from emp where deptno = 30) as "MAX_SAL"
+from dept
+where deptno = 30;
+
+-- get_dept_min_sal: 부서 번호가 주어지면 그 부서의 급여 최솟값을 리턴하는 함수.
+create or replace function get_dept_min_sal(p_no number)
+    return number
+is
+    v_min_sal number;
+begin
+    select min(sal) into v_min_sal
+        from emp
+        where deptno = p_no;
+
+    if v_min_sal is null then
+        v_min_sal := 0;
+    end if;
+
+    return v_min_sal;
+end get_dept_min_sal;
+/
+
+-- get_dept_max_sal: 부서 번호가 주어지면 그 부서의 급여 최댓값을 리턴하는 함수.
+create or replace function get_dept_max_sal(p_no number)
+    return number
+is
+    v_max_sal number;
+begin
+    select max(sal) into v_max_sal
+        from emp
+        where deptno = p_no;
+
+    if v_max_sal is null then
+        v_max_sal := 0;
+    end if;
+
+    return v_max_sal;
+end get_dept_max_sal;
+/
+
+select d.*,
+    get_dept_min_sal(30),
+    get_dept_max_sal(30)
+from dept d
+where deptno = 30;
+
