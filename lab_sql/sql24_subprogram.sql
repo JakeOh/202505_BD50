@@ -240,3 +240,50 @@ from dual;
  end;
  /
  
+ -- 파라미터를 갖는 프로시저 선언
+ create or replace procedure insert_new_dept(
+        p_deptno number,   -- p_deptno dept.deptno%type,
+        p_dname varchar2,  -- p_dname dept.dname%type,
+        p_loc varchar2     -- p_loc dept.loc%type
+ )
+ is
+    v_count number := 0;
+ begin
+    if p_deptno is null then
+        dbms_output.put_line('부서번호 deptno는 null이 될 수 없습니다.');
+        return;  -- 프로시저 종료
+    end if;
+ 
+    select count(*) into v_count
+        from dept
+        where deptno = p_deptno;
+    
+    if v_count != 0 then
+        dbms_output.put_line('부서 번호 deptno가 이미 존재합니다.');
+        return;  -- 프로시저를 종료
+    end if;
+ 
+    -- 묵시적 커서를 사용한 insert
+    insert into dept 
+        values (p_deptno, p_dname, p_loc);
+    
+    dbms_output.put_line(sql%rowcount || '개 행이 삽입됨.');
+ end insert_new_dept;
+ /
+ 
+ execute insert_new_dept(null, 'Database', 'Seoul');
+ select * from dept;
+ 
+ -- 부서 번호를 전달받아서 해당 부서를 삭제하는 프로시저
+ create or replace procedure delete_dept(p_deptno number)
+ is
+ begin
+    delete from dept
+        where deptno = p_deptno;
+    dbms_output.put_line(sql%rowcount || '개 행이 삭제됨.');
+ end delete_dept;
+ /
+ 
+ execute delete_dept(50);
+ select * from dept;
+ 
