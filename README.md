@@ -7,3 +7,6 @@
 * lab_oracle
   * [Oracle Database 21c Express Edition](https://www.oracle.com/kr/database/technologies/xe-downloads.html)
   * [SQL Developer](https://www.oracle.com/kr/database/sqldeveloper/technologies/download/)
+
+* lab_python
+  * Python Programming Lanuguage
