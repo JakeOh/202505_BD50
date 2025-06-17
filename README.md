@@ -4,7 +4,7 @@
 
 * [강의 동영상](https://www.youtube.com/playlist?list=PLIYf0rAjO5mbGpnAknV_9y3hw6ERrS-Fd)
 
-* lab_oracle
+* lab_sql
   * [Oracle Database 21c Express Edition](https://www.oracle.com/kr/database/technologies/xe-downloads.html)
   * [SQL Developer](https://www.oracle.com/kr/database/sqldeveloper/technologies/download/)
 
