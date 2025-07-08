@@ -17,7 +17,9 @@
   * [PyCharm 다운로드](https://www.jetbrains.com/ko-kr/pycharm/download/)
 * lab_da
   * Data Analysis
-  * numpy
-  * pandas
-  * matplotlib
-  * seaborn
+    * numpy
+    * pandas
+    * matplotlib
+    * seaborn
+  * Machine Learning
+    * scikit-learn
