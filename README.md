@@ -30,3 +30,4 @@
 
 * [202505_BD50_lab_llm](https://github.com/JakeOh/202505_BD50_lab_llm)
   * PyCharm IDE LLM 프로젝트
+  * [file](https://drive.google.com/file/d/1KFSLUX4vKMEs-AE83T4PgM2BLv6nWkS3/view?usp=sharing)
