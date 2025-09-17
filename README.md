@@ -1,3 +1,8 @@
+# 투표
+https://forms.gle/SK9HLpQPxLgtuSva6
+
+---
+
 # 202505_BD50
 
 ## 빅데이터 분석 전문가 양성 과정 50기
