@@ -30,3 +30,6 @@
 
 * [202505_BD50_lab_llm](https://github.com/JakeOh/202505_BD50_lab_llm)
   * PyCharm IDE LLM 프로젝트
+
+* Tableau
+  * [Tableau Public](https://public.tableau.com/)
